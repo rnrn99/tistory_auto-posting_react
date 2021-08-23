@@ -22,7 +22,7 @@ mongoose
   .then(() => console.log("MongoDB Connected!"))
   .catch((err) => console.log(err));
 
-app.use("/api/user", require("./router/UserRouter"));
+app.use("/api/user", require("./route/UserRouter"));
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
