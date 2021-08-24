@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Auth from "./auth";
 import LoginPage from "./component/LoginPage/LoginPage";
 import RegisterPage from "./component/RegisterPage/RegisterPage";
+import UserInfoPage from "./component/UserInfoPage/UserInfoPage";
 import Navbar from "./component/Navbar/Navbar";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
+          <Route exact path="/addinfo" component={Auth(UserInfoPage, true)} />
         </Switch>
       </div>
     </Router>

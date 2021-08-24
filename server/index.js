@@ -23,6 +23,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use("/api/user", require("./route/UserRouter"));
+app.use("/api/info", require("./route/InfoRouter"));
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
