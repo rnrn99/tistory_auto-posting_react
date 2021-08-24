@@ -1,22 +1,29 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Form, Input, Button, message, Typography } from "antd";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addInfo } from "../../_action/infoAction";
+
+// 기존 data 있으면 불러오게 해야함
 
 const { Title } = Typography;
 
 function UserInfoPage(props) {
+  const dispatch = useDispatch();
+
   const user = useSelector((state) => state.user);
-  const [AppID, setAppID] = useState(user.appId ? user.addId : "");
+  const info = useSelector((state) => state.info);
+
+  const [AppID, setAppID] = useState(info.infoData ? info.infoData.addId : "");
   const [SecretKey, setSecretKey] = useState(
-    user.secretKey ? user.secretKey : "",
+    info.infoData ? info.infoData.secretKey : "",
   );
   const [RedirectUri, setRedirectUri] = useState(
-    user.redirectUri ? user.redirectUri : "",
+    info.infoData ? info.infoData.redirectUri : "",
   );
-  const [Code, setCode] = useState(user.code ? user.code : "");
+  const [Code, setCode] = useState(info.infoData ? info.infoData.code : "");
   const [AccessToken, setAccessToken] = useState(
-    user.accessToken ? user.accessToken : "",
+    info.infoData ? info.infoData.accessToken : "",
   );
 
   const onAppIDHandler = (e) => {
@@ -63,8 +70,8 @@ function UserInfoPage(props) {
       accessToken: AccessToken,
     };
 
-    axios.post("/api/info/addinfo", variable).then((response) => {
-      if (response.data.success) {
+    dispatch(addInfo(variable)).then((response) => {
+      if (response.payload.success) {
         message.success("추가 정보를 성공적으로 업로드 했습니다.");
         setTimeout(() => {
           props.history.push("/main");
@@ -86,8 +93,8 @@ function UserInfoPage(props) {
         wrapperCol={{ span: 24 }}
       >
         <Form.Item label="AppID">
-          {user.appId ? (
-            user.appId
+          {info.infoData ? (
+            info.infoData.appId
           ) : (
             <Input
               id="appId"
@@ -99,8 +106,8 @@ function UserInfoPage(props) {
           )}
         </Form.Item>
         <Form.Item label="SecretKey">
-          {user.secretKey ? (
-            user.secretKey
+          {info.infoData ? (
+            info.infoData.secretKey
           ) : (
             <Input
               id="secretKey"
@@ -112,8 +119,8 @@ function UserInfoPage(props) {
           )}
         </Form.Item>
         <Form.Item label="redirectUri">
-          {user.redirectUri ? (
-            user.redirectUri
+          {info.infoData ? (
+            info.infoData.redirectUri
           ) : (
             <Input
               id="redirectUri"
@@ -125,8 +132,8 @@ function UserInfoPage(props) {
           )}
         </Form.Item>
         <Form.Item label="code">
-          {user.code ? (
-            user.code
+          {info.infoData ? (
+            info.infoData.code
           ) : (
             <Input
               id="code"
