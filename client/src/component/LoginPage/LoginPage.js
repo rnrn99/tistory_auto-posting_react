@@ -38,7 +38,6 @@ function LoginPage(props) {
 
           dispatch(loginUser(data)).then((response) => {
             if (response.payload.success) {
-              console.log(response.payload);
               window.localStorage.setItem("Id", response.payload.uniqueId);
               message.success("로그인 성공");
               props.history.push("/main");

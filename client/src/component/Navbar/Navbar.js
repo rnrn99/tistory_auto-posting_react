@@ -11,6 +11,7 @@ function Navbar(props) {
   const logoutHandler = () => {
     axios.get(`${SERVER_USER}/logout`).then((response) => {
       if (response.status === 200) {
+        window.localStorage.removeItem("Id");
         props.history.push("/");
       } else {
         message.error("로그아웃에 실패했습니다.");
