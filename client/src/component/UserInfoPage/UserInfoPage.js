@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Input, Button, message, Typography } from "antd";
 import { useSelector } from "react-redux";
@@ -9,19 +9,31 @@ const { Title } = Typography;
 
 function UserInfoPage(props) {
   const user = useSelector((state) => state.user);
-  const info = useSelector((state) => state.info);
 
-  const [AppID, setAppID] = useState(info.infoData ? info.infoData.addId : "");
-  const [SecretKey, setSecretKey] = useState(
-    info.infoData ? info.infoData.secretKey : "",
-  );
-  const [RedirectUri, setRedirectUri] = useState(
-    info.infoData ? info.infoData.redirectUri : "",
-  );
-  const [Code, setCode] = useState(info.infoData ? info.infoData.code : "");
-  const [AccessToken, setAccessToken] = useState(
-    info.infoData ? info.infoData.accessToken : "",
-  );
+  const [AppID, setAppID] = useState("");
+  const [SecretKey, setSecretKey] = useState("");
+  const [RedirectUri, setRedirectUri] = useState("");
+  const [Code, setCode] = useState("");
+  const [AccessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    let variable = {
+      uniqueId: localStorage.getItem("Id"),
+    };
+
+    axios.post("/api/info/getInfo", variable).then((response) => {
+      if (response.data.success) {
+        setAppID(response.data.info[0].appId);
+        setSecretKey(response.data.info[0].secretKey);
+        setRedirectUri(response.data.info[0].redirectUri);
+        setCode(response.data.info[0].code);
+        setAccessToken(response.data.info[0].accessToken);
+      } else {
+        console.log("정보 없음");
+        return;
+      }
+    });
+  }, []);
 
   const onAppIDHandler = (e) => {
     setAppID(e.currentTarget.value);
@@ -85,13 +97,19 @@ function UserInfoPage(props) {
       </Title>
       <Form
         onSubmit={handleSubmit}
-        style={{ width: "400px" }}
+        style={{ width: "800px" }}
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 24 }}
       >
         <Form.Item label="AppID">
-          {info.infoData ? (
-            info.infoData.appId
+          {AppID ? (
+            <Input
+              id="appId"
+              placeholder={AppID}
+              type="text"
+              value={AppID}
+              onChange={onAppIDHandler}
+            />
           ) : (
             <Input
               id="appId"
@@ -103,8 +121,14 @@ function UserInfoPage(props) {
           )}
         </Form.Item>
         <Form.Item label="SecretKey">
-          {info.infoData ? (
-            info.infoData.secretKey
+          {SecretKey ? (
+            <Input
+              id="secretKey"
+              placeholder={SecretKey}
+              type="text"
+              value={SecretKey}
+              onChange={onSecretKeyHandler}
+            />
           ) : (
             <Input
               id="secretKey"
@@ -116,8 +140,14 @@ function UserInfoPage(props) {
           )}
         </Form.Item>
         <Form.Item label="redirectUri">
-          {info.infoData ? (
-            info.infoData.redirectUri
+          {RedirectUri ? (
+            <Input
+              id="redirectUri"
+              placeholder={RedirectUri}
+              type="text"
+              value={RedirectUri}
+              onChange={onRedirectUriHandler}
+            />
           ) : (
             <Input
               id="redirectUri"
@@ -129,8 +159,14 @@ function UserInfoPage(props) {
           )}
         </Form.Item>
         <Form.Item label="code">
-          {info.infoData ? (
-            info.infoData.code
+          {Code ? (
+            <Input
+              id="code"
+              placeholder={Code}
+              type="text"
+              value={Code}
+              onChange={onCodeHandler}
+            />
           ) : (
             <Input
               id="code"
@@ -143,7 +179,11 @@ function UserInfoPage(props) {
         </Form.Item>
         <Form.Item label="accessToken">
           {AccessToken}
-          <Button type="primary" onClick={handleReceive}>
+          <Button
+            type="primary"
+            onClick={handleReceive}
+            style={{ float: "right" }}
+          >
             발급받기
           </Button>
         </Form.Item>

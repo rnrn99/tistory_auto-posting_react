@@ -37,7 +37,7 @@ router.post("/login", (req, res) => {
         res
           .cookie("x_auth", user.token)
           .status(200)
-          .json({ success: true, token: user.token });
+          .json({ success: true, uniqueId: user._id });
       });
     });
   });

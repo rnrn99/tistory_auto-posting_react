@@ -34,4 +34,13 @@ router.post("/getAccessToken", (req, res) => {
     });
 });
 
+router.post("/getInfo", (req, res) => {
+  Info.find({ user: req.body.uniqueId })
+    .populate("user")
+    .exec((err, info) => {
+      if (err) return res.status(400).send(err);
+      return res.status(200).json({ success: true, info });
+    });
+});
+
 module.exports = router;
