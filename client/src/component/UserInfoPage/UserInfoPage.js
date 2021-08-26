@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Form, Input, Button, message, Typography } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import { addInfo } from "../../_action/infoAction";
+import { useSelector } from "react-redux";
 
 // 기존 data 있으면 불러오게 해야함
 
 const { Title } = Typography;
 
 function UserInfoPage(props) {
-  const dispatch = useDispatch();
-
   const user = useSelector((state) => state.user);
   const info = useSelector((state) => state.info);
 
@@ -70,8 +67,8 @@ function UserInfoPage(props) {
       accessToken: AccessToken,
     };
 
-    dispatch(addInfo(variable)).then((response) => {
-      if (response.payload.success) {
+    axios.post("/api/info/addinfo", variable).then((response) => {
+      if (response.data.success) {
         message.success("추가 정보를 성공적으로 업로드 했습니다.");
         setTimeout(() => {
           props.history.push("/main");
