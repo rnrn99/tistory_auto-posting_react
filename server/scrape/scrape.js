@@ -8,7 +8,9 @@ const screen = {
   height: 1080,
 };
 
-const service = new chrome.ServiceBuilder("chromedriver.exe").build();
+const service = new chrome.ServiceBuilder(
+  "server/scrape/chromedriver.exe",
+).build();
 chrome.setDefaultService(service);
 
 const browser = new driver.Builder()
@@ -56,7 +58,7 @@ const enterPage = (link) => {
             .takeScreenshot()
             .then((image, err) => {
               fs.writeFile(
-                `image/result_${month}${date}_${x}.png`,
+                `./server/scrape/image/result_${month}${date}_${x}.png`,
                 image,
                 "base64",
                 (err) => {
@@ -73,7 +75,7 @@ const enterPage = (link) => {
             .takeScreenshot()
             .then((image, err) => {
               fs.writeFile(
-                `image/recodeGraph_${month}${date}_${x}.png`,
+                `./server/scrape/image/recodeGraph_${month}${date}_${x}.png`,
                 image,
                 "base64",
                 (err) => {
@@ -89,7 +91,8 @@ const enterPage = (link) => {
   }
 };
 
-const getGameURL = async () => {
+exports.getGameURL = async () => {
+  makeFolder("./server/scrape/image");
   let url = `https://sports.news.naver.com/kbaseball/schedule/index?date=20210922&month=${month}&year=2021&teamCode=${teamCode}#`;
   browser.get(url);
 
@@ -137,6 +140,3 @@ const getGameURL = async () => {
       });
   }
 };
-
-makeFolder("./image");
-getGameURL();

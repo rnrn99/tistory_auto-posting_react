@@ -6,6 +6,9 @@ const path = require("path");
 const config = require("./config/key");
 const app = express();
 const port = process.env.PORT || 5000;
+const scrape = require("./scrape/scrape");
+
+scrape.getGameURL();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
