@@ -1,6 +1,7 @@
 const driver = require("selenium-webdriver");
 const { By } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
+const fs = require("fs");
 
 const screen = {
   width: 1920,
@@ -17,29 +18,71 @@ const browser = new driver.Builder()
 // .headless()
 
 // 받아와야 할 데이터
-const month = 9;
-const date = 3;
+let month = 9;
+let date = 21;
 const teamCode = "HH";
 
-var link = new Array(); // 경기 결과 페이지 URL
-var isDH = false; // 더블헤더 일정 유무
+month = month > 9 ? month : "0" + String(month);
+date = date > 9 ? date : "0" + String(date);
+
+let link = new Array(); // 경기 결과 페이지 URL
+let isDH = false; // 더블헤더 일정 유무
+
+const makeFolder = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+};
 
 const enterPage = (link) => {
-  for (var i = 0; i < link.length; i++) {
+  for (let i = 0; i < link.length; i++) {
     (function (x) {
       setTimeout(() => {
         browser.get(link[x]);
 
         setTimeout(async () => {
           // 홈, 원정 확인 & 승, 패 여부 확인 -> ex.한화승김민우
-          var team = await browser
+          let team = await browser
             .findElement(
               By.xpath(
                 '//*[@id="content"]/div/div[2]/section[1]/div[2]/div[3]/div[1]/div[2]',
               ),
             )
             .getText();
-          console.log(team);
+
+          // 경기 결과 이미지 저장
+          await browser
+            .findElement(By.className("Home_game_head__3EEZZ"))
+            .takeScreenshot()
+            .then((image, err) => {
+              fs.writeFile(
+                `image/result_${month}${date}_${x}.png`,
+                image,
+                "base64",
+                (err) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                },
+              );
+            });
+
+          // 경기 그래프 이미지 저장
+          await browser
+            .findElement(By.className("TeamVS_comp_team_vs__fpu3N"))
+            .takeScreenshot()
+            .then((image, err) => {
+              fs.writeFile(
+                `image/recodeGraph_${month}${date}_${x}.png`,
+                image,
+                "base64",
+                (err) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                },
+              );
+            });
         }, 1000);
       }, 2000 * x);
     })(i);
@@ -47,11 +90,11 @@ const enterPage = (link) => {
 };
 
 const getGameURL = async () => {
-  var url = `https://sports.news.naver.com/kbaseball/schedule/index?date=20210922&month=${month}&year=2021&teamCode=${teamCode}#`;
+  let url = `https://sports.news.naver.com/kbaseball/schedule/index?date=20210922&month=${month}&year=2021&teamCode=${teamCode}#`;
   browser.get(url);
 
   // 게임 테이블 가져오기
-  var game = await browser.findElement(By.className("tb_wrap"));
+  let game = await browser.findElement(By.className("tb_wrap"));
 
   if (date % 2 === 0) {
     game = await game.findElements(By.className("sch_tb2"));
@@ -84,8 +127,8 @@ const getGameURL = async () => {
     await game[(date - 1) / 2]
       .findElements(By.className("td_btn"))
       .then(async function (links) {
-        for (var i = 0; i < 2; i++) {
-          var href = await links[i]
+        for (let i = 0; i < 2; i++) {
+          let href = await links[i]
             .findElement(By.css("a"))
             .getAttribute("href");
           link.push(href);
@@ -95,4 +138,5 @@ const getGameURL = async () => {
   }
 };
 
+makeFolder("./image");
 getGameURL();
