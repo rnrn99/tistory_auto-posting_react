@@ -5,6 +5,7 @@ import LoginPage from "./component/LoginPage/LoginPage";
 import RegisterPage from "./component/RegisterPage/RegisterPage";
 import UserInfoPage from "./component/UserInfoPage/UserInfoPage";
 import Navbar from "./component/Navbar/Navbar";
+import MainPage from "./component/MainPage/MainPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <div>
         <Switch>
           <Route exact path="/" component={Auth(LoginPage, false)} />
+          <Route exact path="/main" component={Auth(MainPage, true)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
           <Route exact path="/addinfo" component={Auth(UserInfoPage, true)} />
         </Switch>

@@ -27,7 +27,12 @@ function Navbar(props) {
       </>
     );
   } else {
-    return <a onClick={logoutHandler}>로그아웃</a>;
+    return (
+      <>
+        <a href="/addinfo">정보 입력하기</a>
+        <a onClick={logoutHandler}>로그아웃</a>
+      </>
+    );
   }
 }
 

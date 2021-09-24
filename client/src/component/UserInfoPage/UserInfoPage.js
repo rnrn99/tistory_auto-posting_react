@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Form, Input, Button, message, Typography } from "antd";
+import { Form, Input, Button, message, Typography, Popover } from "antd";
 import { useSelector } from "react-redux";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 // 기존 data 있으면 불러오게 해야함
 
@@ -90,11 +91,18 @@ function UserInfoPage(props) {
       }
     });
   };
+
+  const content = <div>tistory open api 등록 방법 이미지 첨부할 곳</div>;
+
   return (
     <div className="app">
       <Title level={2} style={{ marginLeft: "75px" }}>
         추가 정보
+        <Popover title="tistory Open API 등록하기" content={content}>
+          <QuestionCircleOutlined />
+        </Popover>
       </Title>
+
       <Form
         onSubmit={handleSubmit}
         style={{ width: "800px" }}
@@ -181,17 +189,18 @@ function UserInfoPage(props) {
           {AccessToken}
           <Button
             type="primary"
+            ghost
             onClick={handleReceive}
             style={{ float: "right" }}
           >
             발급받기
           </Button>
         </Form.Item>
-        <Form.Item wrapperCol={{ span: 24, offset: 5 }}>
+        <Form.Item wrapperCol={{ span: 24, offset: 12 }}>
           <Button
             type="primary"
             htmlType="submit"
-            style={{ minWidth: "100%" }}
+            style={{ minWidth: "30%" }}
             onClick={handleSubmit}
           >
             등록하기
