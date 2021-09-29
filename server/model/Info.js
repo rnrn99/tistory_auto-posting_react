@@ -11,6 +11,7 @@ const infoSchema = mongoose.Schema({
   redirectUri: String,
   code: String,
   accessToken: String,
+  team: String,
 });
 
 const Info = mongoose.model("Info", infoSchema);

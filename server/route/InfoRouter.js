@@ -13,6 +13,7 @@ router.post("/addinfo", (req, res) => {
 });
 
 router.post("/getAccessToken", (req, res) => {
+  console.log(req.body);
   axios
     .get("https://www.tistory.com/oauth/access_token?", {
       params: {
@@ -24,7 +25,7 @@ router.post("/getAccessToken", (req, res) => {
       },
     })
     .then((response) => {
-      //   console.log(response.data.access_token);
+      console.log(response.data);
       if (response) {
         return res.status(200).json({
           success: true,

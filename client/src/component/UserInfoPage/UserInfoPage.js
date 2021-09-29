@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Form, Input, Button, message, Typography, Popover } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  message,
+  Typography,
+  Popover,
+  Select,
+} from "antd";
 import { useSelector } from "react-redux";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
 // 기존 data 있으면 불러오게 해야함
 
 const { Title } = Typography;
+const { Option } = Select;
 
 function UserInfoPage(props) {
   const user = useSelector((state) => state.user);
@@ -16,6 +25,7 @@ function UserInfoPage(props) {
   const [RedirectUri, setRedirectUri] = useState("");
   const [Code, setCode] = useState("");
   const [AccessToken, setAccessToken] = useState("");
+  const [Team, setTeam] = useState("");
 
   useEffect(() => {
     let variable = {
@@ -24,11 +34,15 @@ function UserInfoPage(props) {
 
     axios.post("/api/info/getInfo", variable).then((response) => {
       if (response.data.success) {
-        setAppID(response.data.info[0].appId);
-        setSecretKey(response.data.info[0].secretKey);
-        setRedirectUri(response.data.info[0].redirectUri);
-        setCode(response.data.info[0].code);
-        setAccessToken(response.data.info[0].accessToken);
+        if (response.data.info.length > 0) {
+          let num = response.data.info.length;
+          setAppID(response.data.info[num - 1].appId);
+          setSecretKey(response.data.info[num - 1].secretKey);
+          setRedirectUri(response.data.info[num - 1].redirectUri);
+          setCode(response.data.info[num - 1].code);
+          setAccessToken(response.data.info[num - 1].accessToken);
+          setTeam(response.data.info[num - 1].team);
+        }
       } else {
         console.log("정보 없음");
         return;
@@ -50,6 +64,10 @@ function UserInfoPage(props) {
     setCode(e.currentTarget.value);
   };
 
+  const onTeamHandler = (e) => {
+    setTeam(e);
+  };
+
   const handleReceive = () => {
     let variable = {
       appId: AppID,
@@ -57,6 +75,7 @@ function UserInfoPage(props) {
       redirectUri: RedirectUri,
       code: Code,
     };
+    console.log(variable);
     axios.post("/api/info/getAccessToken", variable).then((response) => {
       if (response.data.success) {
         setAccessToken(response.data.access_token);
@@ -78,6 +97,7 @@ function UserInfoPage(props) {
       redirectUri: RedirectUri,
       code: Code,
       accessToken: AccessToken,
+      team: Team,
     };
 
     axios.post("/api/info/addinfo", variable).then((response) => {
@@ -92,17 +112,42 @@ function UserInfoPage(props) {
     });
   };
 
-  const content = <div>tistory open api 등록 방법 이미지 첨부할 곳</div>;
+  const content = (
+    <img src="image/how_to_get_AppID.png" alt="how_to_get_AppID" />
+  );
+
+  const codeURL = `https://www.tistory.com/oauth/authorize?client_id=${AppID}&redirect_uri=${RedirectUri}&response_type=code`;
+  const codePopoverContent = (
+    <>
+      <img src="image/how_to_get_code.png" alt="how_to_get_code" />
+      <a href={codeURL} target="_blank" rel="noopener noreferrer">
+        코드 받아오기
+      </a>
+    </>
+  );
+  const codePopover = (
+    <Popover title="Code 발급받는 법" content={codePopoverContent}>
+      <QuestionCircleOutlined />
+    </Popover>
+  );
 
   return (
     <div className="app">
       <Title level={2} style={{ marginLeft: "75px" }}>
         추가 정보
-        <Popover title="tistory Open API 등록하기" content={content}>
-          <QuestionCircleOutlined />
-        </Popover>
       </Title>
-
+      <Popover title="tistory Open API 등록하기" content={content}>
+        <div style={{ marginLeft: "620px" }}>
+          <a
+            href="https://www.tistory.com/guide/api/manage/register"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Tistory Open API 등록하기
+          </a>
+          <QuestionCircleOutlined />
+        </div>
+      </Popover>
       <Form
         onSubmit={handleSubmit}
         style={{ width: "800px" }}
@@ -117,6 +162,7 @@ function UserInfoPage(props) {
               type="text"
               value={AppID}
               onChange={onAppIDHandler}
+              allowClear
             />
           ) : (
             <Input
@@ -125,6 +171,7 @@ function UserInfoPage(props) {
               type="text"
               value={AppID}
               onChange={onAppIDHandler}
+              allowClear
             />
           )}
         </Form.Item>
@@ -136,6 +183,7 @@ function UserInfoPage(props) {
               type="text"
               value={SecretKey}
               onChange={onSecretKeyHandler}
+              allowClear
             />
           ) : (
             <Input
@@ -144,6 +192,7 @@ function UserInfoPage(props) {
               type="text"
               value={SecretKey}
               onChange={onSecretKeyHandler}
+              allowClear
             />
           )}
         </Form.Item>
@@ -155,6 +204,7 @@ function UserInfoPage(props) {
               type="text"
               value={RedirectUri}
               onChange={onRedirectUriHandler}
+              allowClear
             />
           ) : (
             <Input
@@ -163,6 +213,7 @@ function UserInfoPage(props) {
               type="text"
               value={RedirectUri}
               onChange={onRedirectUriHandler}
+              allowClear
             />
           )}
         </Form.Item>
@@ -174,6 +225,8 @@ function UserInfoPage(props) {
               type="text"
               value={Code}
               onChange={onCodeHandler}
+              suffix={codePopover}
+              allowClear
             />
           ) : (
             <Input
@@ -182,6 +235,8 @@ function UserInfoPage(props) {
               type="text"
               value={Code}
               onChange={onCodeHandler}
+              suffix={codePopover}
+              allowClear
             />
           )}
         </Form.Item>
@@ -195,6 +250,25 @@ function UserInfoPage(props) {
           >
             발급받기
           </Button>
+        </Form.Item>
+        <Form.Item label="좋아하는 팀">
+          <Select
+            id="team"
+            value={Team}
+            onChange={onTeamHandler}
+            placeholder={Team}
+          >
+            <Option value="NC">NC</Option>
+            <Option value="OB">두산</Option>
+            <Option value="KT">KT</Option>
+            <Option value="LG">LG</Option>
+            <Option value="WO">키움</Option>
+            <Option value="HT">KIA</Option>
+            <Option value="LT">롯데</Option>
+            <Option value="SS">삼성</Option>
+            <Option value="SK">SSG</Option>
+            <Option value="HH">한화</Option>
+          </Select>
         </Form.Item>
         <Form.Item wrapperCol={{ span: 24, offset: 12 }}>
           <Button
