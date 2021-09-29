@@ -75,7 +75,6 @@ function UserInfoPage(props) {
       redirectUri: RedirectUri,
       code: Code,
     };
-    console.log(variable);
     axios.post("/api/info/getAccessToken", variable).then((response) => {
       if (response.data.success) {
         setAccessToken(response.data.access_token);
