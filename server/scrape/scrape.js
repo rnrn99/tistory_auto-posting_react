@@ -20,7 +20,7 @@ const browser = new driver.Builder()
 
 // 받아와야 할 데이터
 let month = 9;
-let date = 23;
+let date = 21;
 const teamCode = "HH";
 const teamName = "한화";
 
@@ -29,7 +29,6 @@ date = date > 9 ? date : "0" + String(date);
 
 let link = new Array(); // 경기 결과 페이지 URL
 let isDH = false; // 더블헤더 일정 유무
-let isWin = false; // 승리 여부
 
 const makeFolder = (dir) => {
   if (!fs.existsSync(dir)) {
@@ -90,12 +89,6 @@ const enterPage = (link) => {
           if (!team.includes(teamName)) {
             // 해당 팀 원정 경기
 
-            if (team.includes("투") || team.includes("승")) {
-              isWin = false;
-            } else {
-              isWin = true;
-            }
-
             // 야수 기록 이미지 저장
             await browser
               .findElements(By.className("PlayerRecord_table_area__1fIBC"))
@@ -133,11 +126,6 @@ const enterPage = (link) => {
               });
           } else {
             // 해당 팀 홈 경기
-            if (team.includes("승")) {
-              isWin = true;
-            } else {
-              isWin = false;
-            }
 
             // 야수 기록 이미지 저장
             await browser
@@ -181,7 +169,7 @@ const enterPage = (link) => {
   }
 };
 
-exports.getGameURL = async () => {
+const getGameURL = async () => {
   makeFolder("./server/scrape/image");
 
   let url = `https://sports.news.naver.com/kbaseball/schedule/index?date=20210922&month=${month}&year=2021&teamCode=${teamCode}#`;
@@ -206,7 +194,6 @@ exports.getGameURL = async () => {
   } else {
     isDH = false;
   }
-
   // 원하는 게임의 결과 페이지 주소 가져오기
   if (!isDH) {
     game[(date - 1) / 2]
@@ -231,3 +218,4 @@ exports.getGameURL = async () => {
       });
   }
 };
+module.exports = { getGameURL };

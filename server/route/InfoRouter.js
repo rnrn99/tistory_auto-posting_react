@@ -33,6 +33,29 @@ router.post("/getAccessToken", (req, res) => {
     });
 });
 
+router.post("/getCategoryId", (req, res) => {
+  axios
+    .get("https://www.tistory.com/apis/category/list?", {
+      params: {
+        access_token: req.body.accessToken,
+        output: "json",
+        blogName: req.body.redirectUri,
+      },
+    })
+    .then((response) => {
+      let categories = response.data.tistory.item.categories;
+      let length = response.data.tistory.item.categories.length;
+      for (var i = 0; i < length; i++) {
+        if (categories[i].name === req.body.category) {
+          return res.status(200).json({
+            success: true,
+            categoryId: categories[i].id,
+          });
+        }
+      }
+    });
+});
+
 router.post("/getInfo", (req, res) => {
   Info.find({ user: req.body.uniqueId })
     .populate("user")

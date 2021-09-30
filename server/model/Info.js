@@ -11,6 +11,8 @@ const infoSchema = mongoose.Schema({
   redirectUri: String,
   code: String,
   accessToken: String,
+  category: String,
+  categoryId: String,
   team: String,
 });
 

@@ -25,6 +25,8 @@ function UserInfoPage(props) {
   const [RedirectUri, setRedirectUri] = useState("");
   const [Code, setCode] = useState("");
   const [AccessToken, setAccessToken] = useState("");
+  const [Category, setCategory] = useState("");
+  const [CategoryID, setCategoryID] = useState("");
   const [Team, setTeam] = useState("");
 
   useEffect(() => {
@@ -41,6 +43,8 @@ function UserInfoPage(props) {
           setRedirectUri(response.data.info[num - 1].redirectUri);
           setCode(response.data.info[num - 1].code);
           setAccessToken(response.data.info[num - 1].accessToken);
+          setCategory(response.data.info[num - 1].category);
+          setCategoryID(response.data.info[num - 1].categoryId);
           setTeam(response.data.info[num - 1].team);
         }
       } else {
@@ -63,7 +67,9 @@ function UserInfoPage(props) {
   const onCodeHandler = (e) => {
     setCode(e.currentTarget.value);
   };
-
+  const onCategoryHandler = (e) => {
+    setCategory(e.currentTarget.value);
+  };
   const onTeamHandler = (e) => {
     setTeam(e);
   };
@@ -86,6 +92,22 @@ function UserInfoPage(props) {
     });
   };
 
+  const handleCategory = () => {
+    let variable = {
+      accessToken: AccessToken,
+      redirectUri: RedirectUri,
+      category: Category,
+    };
+
+    axios.post("/api/info/getCategoryId", variable).then((response) => {
+      if (response.data.success) {
+        setCategoryID(response.data.categoryId);
+      } else {
+        message.error("카테고리 id 발급에 실패했습니다.");
+      }
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -96,8 +118,12 @@ function UserInfoPage(props) {
       redirectUri: RedirectUri,
       code: Code,
       accessToken: AccessToken,
+      category: Category,
+      categoryId: CategoryID,
       team: Team,
     };
+
+    console.log(variable);
 
     axios.post("/api/info/addinfo", variable).then((response) => {
       if (response.data.success) {
@@ -135,6 +161,7 @@ function UserInfoPage(props) {
       <Title level={2} style={{ marginLeft: "75px" }}>
         추가 정보
       </Title>
+
       <Popover title="tistory Open API 등록하기" content={content}>
         <div style={{ marginLeft: "620px" }}>
           <a
@@ -147,6 +174,7 @@ function UserInfoPage(props) {
           <QuestionCircleOutlined />
         </div>
       </Popover>
+
       <Form
         onSubmit={handleSubmit}
         style={{ width: "800px" }}
@@ -157,7 +185,6 @@ function UserInfoPage(props) {
           {AppID ? (
             <Input
               id="appId"
-              placeholder={AppID}
               type="text"
               value={AppID}
               onChange={onAppIDHandler}
@@ -174,11 +201,11 @@ function UserInfoPage(props) {
             />
           )}
         </Form.Item>
+
         <Form.Item label="SecretKey">
           {SecretKey ? (
             <Input
               id="secretKey"
-              placeholder={SecretKey}
               type="text"
               value={SecretKey}
               onChange={onSecretKeyHandler}
@@ -195,11 +222,11 @@ function UserInfoPage(props) {
             />
           )}
         </Form.Item>
+
         <Form.Item label="redirectUri">
           {RedirectUri ? (
             <Input
               id="redirectUri"
-              placeholder={RedirectUri}
               type="text"
               value={RedirectUri}
               onChange={onRedirectUriHandler}
@@ -216,11 +243,11 @@ function UserInfoPage(props) {
             />
           )}
         </Form.Item>
+
         <Form.Item label="code">
           {Code ? (
             <Input
               id="code"
-              placeholder={Code}
               type="text"
               value={Code}
               onChange={onCodeHandler}
@@ -239,6 +266,7 @@ function UserInfoPage(props) {
             />
           )}
         </Form.Item>
+
         <Form.Item label="accessToken">
           {AccessToken}
           <Button
@@ -250,6 +278,34 @@ function UserInfoPage(props) {
             발급받기
           </Button>
         </Form.Item>
+
+        <Form.Item label="category">
+          <Input.Group compact>
+            {Category ? (
+              <Input
+                value={Category}
+                onChange={onCategoryHandler}
+                style={{ width: "40%" }}
+              />
+            ) : (
+              <Input
+                placeholder="Enter your Blog Category Name"
+                onChange={onCategoryHandler}
+                style={{ width: "40%" }}
+              />
+            )}
+            <Button
+              type="primary"
+              ghost
+              style={{ width: "20%" }}
+              onClick={handleCategory}
+            >
+              카테고리 등록
+            </Button>
+            <Input style={{ width: "40%" }} type="text" value={CategoryID} />
+          </Input.Group>
+        </Form.Item>
+
         <Form.Item label="좋아하는 팀">
           <Select
             id="team"
@@ -269,6 +325,7 @@ function UserInfoPage(props) {
             <Option value="HH">한화</Option>
           </Select>
         </Form.Item>
+
         <Form.Item wrapperCol={{ span: 24, offset: 12 }}>
           <Button
             type="primary"
