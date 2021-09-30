@@ -235,7 +235,7 @@ function UserInfoPage(props) {
           ) : (
             <Input
               id="redirectUri"
-              placeholder="Enter your redirectUri"
+              placeholder="Enter your Blog URL"
               type="text"
               value={RedirectUri}
               onChange={onRedirectUriHandler}
