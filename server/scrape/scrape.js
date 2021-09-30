@@ -8,25 +8,10 @@ const screen = {
   height: 1080,
 };
 
-const service = new chrome.ServiceBuilder(
-  "server/scrape/chromedriver.exe",
-).build();
-chrome.setDefaultService(service);
+let service = null;
+let browser = null;
 
-const browser = new driver.Builder()
-  .forBrowser("chrome")
-  .setChromeOptions(new chrome.Options().headless().windowSize(screen))
-  .build();
-
-// 받아와야 할 데이터
-let month = 9;
-let date = 21;
-const teamCode = "HH";
-const teamName = "한화";
-
-month = month > 9 ? month : "0" + String(month);
-date = date > 9 ? date : "0" + String(date);
-
+let teamName = "";
 let link = new Array(); // 경기 결과 페이지 URL
 let isDH = false; // 더블헤더 일정 유무
 
@@ -36,7 +21,40 @@ const makeFolder = (dir) => {
   }
 };
 
-const enterPage = (link) => {
+const enterPage = (link, month, date, teamCode) => {
+  switch (teamCode) {
+    case "NC":
+      teamName = "NC";
+      break;
+    case "OB":
+      teamName = "두산";
+      break;
+    case "KT":
+      teamName = "KT";
+      break;
+    case "LG":
+      teamName = "LG";
+      break;
+    case "WO":
+      teamName = "키움";
+      break;
+    case "HT":
+      teamName = "KIA";
+      break;
+    case "LT":
+      teamName = "롯데";
+      break;
+    case "SS":
+      teamName = "삼성";
+      break;
+    case "SK":
+      teamName = "SSG";
+      break;
+    case "HH":
+      teamName = "한화";
+      break;
+  }
+
   for (let i = 0; i < link.length; i++) {
     (function (x) {
       setTimeout(() => {
@@ -68,6 +86,8 @@ const enterPage = (link) => {
                 },
               );
             });
+          // 사진 잘리기 방지용
+          await browser.executeScript("window.scrollBy(0,500)");
 
           // 경기 그래프 이미지 저장
           await browser
@@ -85,7 +105,6 @@ const enterPage = (link) => {
                 },
               );
             });
-
           if (!team.includes(teamName)) {
             // 해당 팀 원정 경기
 
@@ -122,6 +141,7 @@ const enterPage = (link) => {
                       }
                     },
                   );
+                  browser.quit();
                 });
               });
           } else {
@@ -160,6 +180,7 @@ const enterPage = (link) => {
                       }
                     },
                   );
+                  browser.quit();
                 });
               });
           }
@@ -169,8 +190,19 @@ const enterPage = (link) => {
   }
 };
 
-const getGameURL = async () => {
+exports.getGameURL = async (month, date, teamCode) => {
   makeFolder("./server/scrape/image");
+
+  service = new chrome.ServiceBuilder("server/scrape/chromedriver.exe").build();
+  chrome.setDefaultService(service);
+
+  browser = new driver.Builder()
+    .forBrowser("chrome")
+    .setChromeOptions(new chrome.Options().headless().windowSize(screen))
+    .build();
+
+  month = parseInt(month) > 9 ? month : "0" + month;
+  date = parseInt(date) > 9 ? date : "0" + date;
 
   let url = `https://sports.news.naver.com/kbaseball/schedule/index?date=20210922&month=${month}&year=2021&teamCode=${teamCode}#`;
   browser.get(url);
@@ -185,27 +217,28 @@ const getGameURL = async () => {
   }
 
   // DH 일정 체크
-  if (
-    (await game[(date - 1) / 2]
-      .findElement(By.css("td"))
-      .getAttribute("rowspan")) === "2"
-  ) {
-    isDH = true;
-  } else {
-    isDH = false;
-  }
+  await game[parseInt((date - 1) / 2)]
+    .findElements(By.css("tr"))
+    .then((element) => {
+      if (element.length > 1) {
+        isDH = true;
+      } else {
+        isDH = false;
+      }
+    });
+
   // 원하는 게임의 결과 페이지 주소 가져오기
   if (!isDH) {
-    game[(date - 1) / 2]
+    game[parseInt((date - 1) / 2)]
       .findElement(By.className("td_btn"))
       .findElement(By.css("a"))
       .getAttribute("href")
       .then(function (href) {
         link.push(href);
-        enterPage(link);
+        enterPage(link, month, date, teamCode);
       });
   } else {
-    await game[(date - 1) / 2]
+    await game[parseInt((date - 1) / 2)]
       .findElements(By.className("td_btn"))
       .then(async function (links) {
         for (let i = 0; i < 2; i++) {
@@ -214,8 +247,7 @@ const getGameURL = async () => {
             .getAttribute("href");
           link.push(href);
         }
-        enterPage(link);
+        enterPage(link, month, date, teamCode);
       });
   }
 };
-module.exports = { getGameURL };
