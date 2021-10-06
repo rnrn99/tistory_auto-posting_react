@@ -1,5 +1,5 @@
 const driver = require("selenium-webdriver");
-const { By } = require("selenium-webdriver");
+const { By, until } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 const fs = require("fs");
 
@@ -54,139 +54,158 @@ const enterPage = (link, month, date, teamCode) => {
       teamName = "한화";
       break;
   }
-
-  for (let i = 0; i < link.length; i++) {
-    (function (x) {
-      setTimeout(() => {
-        browser.get(link[x]);
-
+  try {
+    for (let i = 0; i < link.length; i++) {
+      (function (x) {
         setTimeout(async () => {
-          // 홈, 원정 확인 & 승, 패 여부 확인 -> ex.한화승김민우
-          let team = await browser
-            .findElement(
+          browser.get(link[x]);
+
+          // 페이지 로딩 기다림
+          await browser.wait(
+            until.elementLocated(
               By.xpath(
                 '//*[@id="content"]/div/div[2]/section[1]/div[2]/div[3]/div[1]/div[2]',
               ),
-            )
-            .getText();
+            ),
+            2000,
+          );
 
-          // 경기 결과 이미지 저장
-          await browser
-            .findElement(By.className("Home_game_head__3EEZZ"))
-            .takeScreenshot()
-            .then((image, err) => {
-              fs.writeFile(
-                `./server/scrape/image/result_${month}${date}_${x}.png`,
-                image,
-                "base64",
-                (err) => {
-                  if (err) {
-                    console.log(err);
-                  }
-                },
-              );
-            });
-          // 사진 잘리기 방지용
-          await browser.executeScript("window.scrollBy(0,500)");
+          setTimeout(async () => {
+            // 홈, 원정 확인 & 승, 패 여부 확인 -> ex.한화승김민우
+            let team = await browser
+              .findElement(
+                By.xpath(
+                  '//*[@id="content"]/div/div[2]/section[1]/div[2]/div[3]/div[1]/div[2]',
+                ),
+              )
+              .getText();
 
-          // 경기 그래프 이미지 저장
-          await browser
-            .findElement(By.className("TeamVS_comp_team_vs__fpu3N"))
-            .takeScreenshot()
-            .then((image, err) => {
-              fs.writeFile(
-                `./server/scrape/image/recodeGraph_${month}${date}_${x}.png`,
-                image,
-                "base64",
-                (err) => {
-                  if (err) {
-                    console.log(err);
-                  }
-                },
-              );
-            });
-          if (!team.includes(teamName)) {
-            // 해당 팀 원정 경기
-
-            // 야수 기록 이미지 저장
+            // 경기 결과 이미지 저장
             await browser
-              .findElements(By.className("PlayerRecord_table_area__1fIBC"))
-              .then((record) => {
-                record[0].takeScreenshot().then((image, err) => {
-                  fs.writeFile(
-                    `./server/scrape/image/playerRecord_${month}${date}_${x}.png`,
-                    image,
-                    "base64",
-                    (err) => {
-                      if (err) {
-                        console.log(err);
-                      }
-                    },
-                  );
-                });
+              .findElement(By.className("Home_game_head__3EEZZ"))
+              .takeScreenshot()
+              .then((image, err) => {
+                fs.writeFile(
+                  `./server/scrape/image/result_${month}${date}_${x}.png`,
+                  image,
+                  "base64",
+                  (err) => {
+                    if (err) {
+                      console.log(err);
+                    }
+                  },
+                );
               });
 
-            // 투수 기록 이미지 저장
+            // 경기 그래프 이미지 저장
             await browser
-              .findElements(By.className("PlayerRecord_table_area__1fIBC"))
-              .then((record) => {
-                record[2].takeScreenshot().then((image, err) => {
-                  fs.writeFile(
-                    `./server/scrape/image/pitcherRecord_${month}${date}_${x}.png`,
-                    image,
-                    "base64",
-                    (err) => {
-                      if (err) {
-                        console.log(err);
-                      }
-                    },
-                  );
-                  browser.quit();
-                });
-              });
-          } else {
-            // 해당 팀 홈 경기
-
-            // 야수 기록 이미지 저장
-            await browser
-              .findElements(By.className("PlayerRecord_table_area__1fIBC"))
-              .then((record) => {
-                record[1].takeScreenshot().then((image, err) => {
-                  fs.writeFile(
-                    `./server/scrape/image/playerRecord_${month}${date}_${x}.png`,
-                    image,
-                    "base64",
-                    (err) => {
-                      if (err) {
-                        console.log(err);
-                      }
-                    },
-                  );
-                });
+              .findElement(By.className("TeamVS_comp_team_vs__fpu3N"))
+              .takeScreenshot()
+              .then((image, err) => {
+                fs.writeFile(
+                  `./server/scrape/image/recodeGraph_${month}${date}_${x}.png`,
+                  image,
+                  "base64",
+                  (err) => {
+                    if (err) {
+                      console.log(err);
+                    }
+                  },
+                );
               });
 
-            // 투수 기록 이미지 저장
-            await browser
-              .findElements(By.className("PlayerRecord_table_area__1fIBC"))
-              .then((record) => {
-                record[3].takeScreenshot().then((image, err) => {
-                  fs.writeFile(
-                    `./server/scrape/image/pitcherRecord_${month}${date}_${x}.png`,
-                    image,
-                    "base64",
-                    (err) => {
-                      if (err) {
-                        console.log(err);
-                      }
-                    },
-                  );
-                  browser.quit();
+            if (!team.includes(teamName)) {
+              // 해당 팀 원정 경기
+
+              // 야수 기록 이미지 저장
+              await browser
+                .findElements(By.className("PlayerRecord_table_area__1fIBC"))
+                .then((record) => {
+                  record[0].takeScreenshot().then((image, err) => {
+                    fs.writeFile(
+                      `./server/scrape/image/playerRecord_${month}${date}_${x}.png`,
+                      image,
+                      "base64",
+                      (err) => {
+                        if (err) {
+                          console.log(err);
+                        }
+                      },
+                    );
+                  });
                 });
-              });
-          }
-        }, 1000);
-      }, 2000 * x);
-    })(i);
+
+              // 투수 기록 이미지 저장
+              await browser
+                .findElements(By.className("PlayerRecord_table_area__1fIBC"))
+                .then((record) => {
+                  record[2].takeScreenshot().then((image, err) => {
+                    fs.writeFile(
+                      `./server/scrape/image/pitcherRecord_${month}${date}_${x}.png`,
+                      image,
+                      "base64",
+                      (err) => {
+                        if (err) {
+                          console.log(err);
+                        }
+                      },
+                    );
+                    if (x === link.length - 1) {
+                      browser.quit();
+                    }
+                  });
+                });
+            } else {
+              // 해당 팀 홈 경기
+
+              // 야수 기록 이미지 저장
+              await browser
+                .findElements(By.className("PlayerRecord_table_area__1fIBC"))
+                .then((record) => {
+                  record[1].takeScreenshot().then((image, err) => {
+                    fs.writeFile(
+                      `./server/scrape/image/playerRecord_${month}${date}_${x}.png`,
+                      image,
+                      "base64",
+                      (err) => {
+                        if (err) {
+                          console.log(err);
+                        }
+                      },
+                    );
+                  });
+                });
+
+              // 투수 기록 이미지 저장
+              await browser
+                .findElements(By.className("PlayerRecord_table_area__1fIBC"))
+                .then((record) => {
+                  record[3].takeScreenshot().then((image, err) => {
+                    fs.writeFile(
+                      `./server/scrape/image/pitcherRecord_${month}${date}_${x}.png`,
+                      image,
+                      "base64",
+                      (err) => {
+                        if (err) {
+                          console.log(err);
+                        }
+                      },
+                    );
+                    if (x === link.length - 1) {
+                      browser.quit();
+                    }
+                  });
+                });
+            }
+          }, 1000);
+        }, 2000 * x);
+      })(i);
+    }
+  } catch (error) {
+    if (error) {
+      console.log("capture error");
+      browser.quit();
+    }
   }
 };
 
@@ -198,7 +217,7 @@ exports.getGameURL = async (month, date, teamCode) => {
 
   browser = new driver.Builder()
     .forBrowser("chrome")
-    .setChromeOptions(new chrome.Options().headless().windowSize(screen))
+    .setChromeOptions(new chrome.Options().windowSize(screen))
     .build();
 
   month = parseInt(month) > 9 ? month : "0" + month;

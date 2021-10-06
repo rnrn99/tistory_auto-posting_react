@@ -34,6 +34,8 @@ function MainPage() {
   const [AccessToken, setAccessToken] = useState("");
   const [CategoryID, setCategoryID] = useState("");
   const [Team, setTeam] = useState("");
+  const [Image, setImage] = useState([]);
+  const [ImageButtonClick, setImageButtonClick] = useState(false);
 
   useEffect(() => {
     let variable = {
@@ -69,17 +71,38 @@ function MainPage() {
       teamCode: Team,
     };
 
+    message.loading("경기 기록을 가져오고 있습니다. 잠시만 기다려주세요.");
+
     axios.post("/api/posting/getGameResult", variable).then((response) => {
       if (response.data.success) {
         message.success("경기 기록을 가져오는 데에 성공했습니다.");
-        setMonth("");
-        setDate("");
+        console.log(response.data.image);
+        setImage(response.data.image);
       } else {
         message.error(
           "경기 기록을 가져오는 데에 실패했습니다. 잠시후 다시 시도해 주세요.",
         );
       }
     });
+  };
+
+  const handleImage = () => {
+    setImageButtonClick(!ImageButtonClick);
+  };
+
+  const renderingImage = () => {
+    const image = [];
+    for (const i of Image.reverse()) {
+      image.push(
+        <img
+          src={"http://localhost:5000/" + i}
+          alt={i}
+          width="50%"
+          height="30%"
+        ></img>,
+      );
+    }
+    return image;
   };
 
   return (
@@ -109,16 +132,27 @@ function MainPage() {
         <Form.Item label="Title">
           <AutoComplete placeholder="Enter the title" options={[{}]} />
         </Form.Item>
+
+        {Image.length > 0 && (
+          <Form.Item wrapperCol={{ span: 24, offset: 5 }}>
+            <Button
+              type="primary"
+              ghost
+              style={{ width: "30%" }}
+              onClick={handleImage}
+            >
+              사진 미리보기
+            </Button>
+          </Form.Item>
+        )}
+        {ImageButtonClick && (
+          <Form.Item wrapperCol={{ span: 24, offset: 5 }}>
+            {renderingImage()}
+          </Form.Item>
+        )}
       </Form>
     </div>
   );
 }
 
 export default MainPage;
-
-{
-  /* <Select
-            defaultValue={getMonth + "월"}
-            style={{ width: "50%" }}
-          ></Select> */
-}
