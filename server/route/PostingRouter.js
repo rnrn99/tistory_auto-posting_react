@@ -18,7 +18,7 @@ router.post("/getGameResult", (req, res) => {
       if (files) {
         return res.status(200).json({
           success: true,
-          image: files,
+          image: files.reverse(),
         });
       } else {
         return res.status(400).json({
@@ -26,7 +26,7 @@ router.post("/getGameResult", (req, res) => {
         });
       }
     });
-  }, 5000);
+  }, 7000);
 });
 
 module.exports = router;

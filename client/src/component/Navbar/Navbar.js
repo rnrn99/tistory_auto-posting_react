@@ -29,6 +29,7 @@ function Navbar(props) {
   } else {
     return (
       <>
+        <a href="/main">포스팅하기</a>
         <a href="/addinfo">정보 입력하기</a>
         <a onClick={logoutHandler}>로그아웃</a>
       </>

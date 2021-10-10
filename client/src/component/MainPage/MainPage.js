@@ -6,7 +6,6 @@ import {
   Button,
   message,
   Typography,
-  Select,
   AutoComplete,
   DatePicker,
 } from "antd";
@@ -25,7 +24,7 @@ import { useSelector } from "react-redux";
 // }
 
 const { Title } = Typography;
-const { Option } = Select;
+const { TextArea } = Input;
 
 function MainPage() {
   const [Month, setMonth] = useState("");
@@ -34,6 +33,8 @@ function MainPage() {
   const [AccessToken, setAccessToken] = useState("");
   const [CategoryID, setCategoryID] = useState("");
   const [Team, setTeam] = useState("");
+  const [PostingTitle, setPostingTitle] = useState("");
+  const [Comment, setComment] = useState("");
   const [Image, setImage] = useState([]);
   const [ImageButtonClick, setImageButtonClick] = useState(false);
 
@@ -63,6 +64,14 @@ function MainPage() {
     setDate(value.format("D"));
   };
 
+  const onPostingTitleHandler = (value) => {
+    setPostingTitle(value);
+  };
+
+  const onCommentHandler = (e) => {
+    setComment(e.currentTarget.value);
+  };
+
   const scrapeData = () => {
     // 서버 단으로 요청 보내서 scrape.js 동작
     let variable = {
@@ -76,7 +85,6 @@ function MainPage() {
     axios.post("/api/posting/getGameResult", variable).then((response) => {
       if (response.data.success) {
         message.success("경기 기록을 가져오는 데에 성공했습니다.");
-        console.log(response.data.image);
         setImage(response.data.image);
       } else {
         message.error(
@@ -92,11 +100,12 @@ function MainPage() {
 
   const renderingImage = () => {
     const image = [];
-    for (const i of Image.reverse()) {
+    for (const i of Image) {
       image.push(
         <img
           src={"http://localhost:5000/" + i}
           alt={i}
+          key={i}
           width="50%"
           height="30%"
         ></img>,
@@ -104,6 +113,18 @@ function MainPage() {
     }
     return image;
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log(PostingTitle, Comment);
+  };
+
+  const options = [
+    { value: `${Month}월 ${Date}일` },
+    { value: `${Month}월 ${Date}일 야구 기록` },
+    { value: `${Month}월 ${Date}일 야구 일기` },
+  ];
 
   return (
     <div className="app">
@@ -130,7 +151,21 @@ function MainPage() {
         </Form.Item>
 
         <Form.Item label="Title">
-          <AutoComplete placeholder="Enter the title" options={[{}]} />
+          <AutoComplete
+            placeholder="Enter the title"
+            options={options}
+            value={PostingTitle}
+            onChange={onPostingTitleHandler}
+          />
+        </Form.Item>
+
+        <Form.Item label="Comment">
+          <TextArea
+            placeholder="Enter your comment about the game"
+            rows={4}
+            value={Comment}
+            onChange={onCommentHandler}
+          ></TextArea>
         </Form.Item>
 
         {Image.length > 0 && (
@@ -150,6 +185,16 @@ function MainPage() {
             {renderingImage()}
           </Form.Item>
         )}
+        <Form.Item wrapperCol={{ span: 24, offset: 12 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ minWidth: "30%" }}
+            onClick={handleSubmit}
+          >
+            포스팅하기
+          </Button>
+        </Form.Item>
       </Form>
     </div>
   );

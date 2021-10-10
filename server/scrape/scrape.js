@@ -217,7 +217,7 @@ exports.getGameURL = async (month, date, teamCode) => {
 
   browser = new driver.Builder()
     .forBrowser("chrome")
-    .setChromeOptions(new chrome.Options().windowSize(screen))
+    .setChromeOptions(new chrome.Options().headless().windowSize(screen))
     .build();
 
   month = parseInt(month) > 9 ? month : "0" + month;
