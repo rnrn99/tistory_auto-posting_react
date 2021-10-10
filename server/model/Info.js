@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
+const config = require("../config/key");
 const Schema = mongoose.Schema;
 
 const infoSchema = mongoose.Schema({
@@ -14,6 +16,11 @@ const infoSchema = mongoose.Schema({
   category: String,
   categoryId: String,
   team: String,
+});
+
+infoSchema.plugin(encrypt, {
+  secret: config.secret,
+  encryptedFields: ["accessToken", "secretKey"],
 });
 
 const Info = mongoose.model("Info", infoSchema);

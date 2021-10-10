@@ -58,6 +58,7 @@ router.post("/getCategoryId", (req, res) => {
 
 router.post("/getInfo", (req, res) => {
   Info.find({ user: req.body.uniqueId })
+    .sort({ dateCreated: -1 })
     .populate("user")
     .exec((err, info) => {
       if (err) return res.status(400).send(err);
