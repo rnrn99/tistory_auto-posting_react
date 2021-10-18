@@ -103,7 +103,7 @@ const enterPage = (link, month, date, teamCode) => {
               .takeScreenshot()
               .then((image, err) => {
                 fs.writeFile(
-                  `./server/scrape/image/recodeGraph_${month}${date}_${x}.png`,
+                  `./server/scrape/image/recordGraph_${month}${date}_${x}.png`,
                   image,
                   "base64",
                   (err) => {

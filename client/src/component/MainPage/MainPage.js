@@ -9,19 +9,6 @@ import {
   AutoComplete,
   DatePicker,
 } from "antd";
-import { useSelector } from "react-redux";
-
-// <img src="http://localhost:5000/result_0921_0.png" alt="img" />
-// parameters = {
-//   'access_token': access_token,
-//   'output': 'json',
-//   'blogName': blogName,
-//   'title': title,
-//   'content': content,
-//   'visibility': '3',
-//   'category': categoryId,
-//   'tag': '{}, 한화이글스'.format(tag)
-// }
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -37,6 +24,7 @@ function MainPage() {
   const [Comment, setComment] = useState("");
   const [Image, setImage] = useState([]);
   const [ImageButtonClick, setImageButtonClick] = useState(false);
+  const [Replacer, setReplacer] = useState([]);
 
   useEffect(() => {
     let variable = {
@@ -114,10 +102,61 @@ function MainPage() {
     return image;
   };
 
+  const handleReplacer = () => {
+    let item = [];
+    for (const i of Image) {
+      let variable = {
+        accessToken: AccessToken,
+        redirectUri: RedirectUri,
+        postingTitle: PostingTitle,
+        comment: Comment,
+        category: CategoryID,
+        image: i,
+      };
+
+      axios.post("/api/posting/getReplacer", variable).then((response) => {
+        if (response.data.success) {
+          item.push({
+            filename: response.data.filename,
+            replacer: response.data.replacer,
+          });
+          setReplacer(item);
+        } else {
+          message.error(
+            "사진 업로드에 실패했습니다. 잠시 후 다시 시도해 주세요",
+          );
+        }
+      });
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(Image);
 
-    console.log(PostingTitle, Comment);
+    let variable = {
+      accessToken: AccessToken,
+      redirectUri: RedirectUri,
+      postingTitle: PostingTitle,
+      comment: Comment,
+      category: CategoryID,
+      image: Image,
+    };
+
+    axios.post("/api/posting/posting", variable).then((response) => {
+      if (response.data.success) {
+        console.log(response.data);
+      } else {
+        message.error(
+          "블로그에 포스팅하는데 실패했습니다. 잠시 후 다시 시도해 주세요.",
+        );
+      }
+    });
+  };
+
+  //Replacer 확인용
+  const handleTest = () => {
+    console.log(Replacer);
   };
 
   const options = [
@@ -178,6 +217,14 @@ function MainPage() {
             >
               사진 미리보기
             </Button>
+            <Button
+              type="primary"
+              ghost
+              style={{ float: "right", minWidth: "30%" }}
+              onClick={handleReplacer}
+            >
+              사진 저장하기
+            </Button>
           </Form.Item>
         )}
         {ImageButtonClick && (
@@ -195,6 +242,19 @@ function MainPage() {
             포스팅하기
           </Button>
         </Form.Item>
+
+        {
+          /* Replacer 확인용 test 버튼 ####나중에 지우기 */
+          <Form.Item wrapperCol={{ span: 24, offset: 12 }}>
+            <Button
+              type="primary"
+              style={{ minWidth: "30%" }}
+              onClick={handleTest}
+            >
+              test
+            </Button>
+          </Form.Item>
+        }
       </Form>
     </div>
   );
