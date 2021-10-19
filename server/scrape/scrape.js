@@ -200,13 +200,17 @@ exports.getGameURL = async (month, date, teamCode) => {
     options.setChromeBinaryPath(config.chromeBin);
   }
 
-  // options.addArguments("--headless");
+  options.addArguments("--headless");
   options.addArguments("--disable-gpu");
+  options.addArguments("--test-type");
+  options.addArguments("--no-first-run");
   options.addArguments("--no-sandbox");
+  options.addArguments("--no-default-browser-check");
+  options.addArguments("--ignore-certificate-errors");
   options.addArguments("--start-fullscreen");
-  options.addArguments([
-    'user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36"',
-  ]);
+  options.addArguments(
+    "User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+  );
 
   browser = new driver.Builder()
     .forBrowser("chrome")
