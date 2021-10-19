@@ -58,6 +58,16 @@ const enterPage = (link, month, date, teamCode) => {
         setTimeout(async () => {
           browser.get(link[x]);
 
+          // 페이지 로딩 기다림
+          await browser.wait(
+            until.elementLocated(
+              By.xpath(
+                '//*[@id="content"]/div/div[2]/section[1]/div[2]/div[3]/div[1]/div[2]',
+              ),
+            ),
+            2000,
+          );
+
           setTimeout(async () => {
             // 홈, 원정 확인 & 승, 패 여부 확인 -> ex.한화승김민우
             let team = await browser
@@ -190,7 +200,7 @@ exports.getGameURL = async (month, date, teamCode) => {
     options.setChromeBinaryPath(config.chromeBin);
   }
 
-  options.addArguments("--headless");
+  // options.addArguments("--headless");
   options.addArguments("--disable-gpu");
   options.addArguments("--no-sandbox");
   options.addArguments("--start-fullscreen");
