@@ -89,10 +89,11 @@ function MainPage() {
   const renderingImage = () => {
     const image = [];
     for (const i of Image) {
-      console.log(process.env.REACT_APP_IMAGE_URI);
       image.push(
         <img
-          src={`${process.env.REACT_APP_IMAGE_URI}` + i}
+          src={
+            "https://res.cloudinary.com/dxr1xgmcb/image/upload/v1634639376/" + i
+          }
           alt={i}
           key={i}
           width="50%"
