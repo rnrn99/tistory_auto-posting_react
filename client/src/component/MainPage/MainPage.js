@@ -156,9 +156,9 @@ function MainPage() {
     });
   };
 
-  //Replacer 확인용
+  //확인용
   const handleTest = () => {
-    console.log(Replacer);
+    console.log(Image);
   };
 
   const options = [

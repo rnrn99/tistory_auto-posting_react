@@ -11,6 +11,7 @@ cloudinary.config({
   cloud_name: config.cloudName,
   api_key: config.cloudApiKey,
   api_secret: config.cloudApiSecret,
+  secure: true,
 });
 
 let service = null;
