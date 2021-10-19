@@ -5,6 +5,7 @@ const { Options } = require("selenium-webdriver/chrome");
 const fs = require("fs");
 const config = require("../config/key");
 const cloudinary = require("cloudinary");
+const streamifier = require("streamifier");
 
 cloudinary.config({
   cloud_name: config.cloudName,
@@ -82,53 +83,28 @@ const enterPage = (link, month, date, teamCode) => {
             await browser
               .findElement(By.className("Home_game_head__3EEZZ"))
               .takeScreenshot()
-              .then((image, err) => {
-                console.log();
-                fs.writeFile(
-                  `upload/result_${month}${date}_${x}.png`,
-                  image,
-                  "base64",
-                  (err) => {
-                    if (err) {
-                      console.log(err);
-                    }
-                  },
-                );
-                cloudinary.v2.uploader.upload(
-                  `upload/result_${month}${date}_${x}.png`,
-                  {
-                    public_id: `result_${month}${date}_${x}`,
-                  },
-                  function (result) {
-                    console.log(result);
-                  },
-                );
+              .then((image) => {
+                let uploadStream = cloudinary.v2.uploader.upload_stream({
+                  public_id: `result_${month}${date}_${x}`,
+                  folder: "posting",
+                });
+                let content = "data:image/png;base64," + image;
+
+                streamifier.createReadStream(content).pipe(uploadStream);
               });
 
             // 경기 그래프 이미지 저장
             await browser
               .findElement(By.className("TeamVS_comp_team_vs__fpu3N"))
               .takeScreenshot()
-              .then((image, err) => {
-                fs.writeFile(
-                  `upload/recordGraph_${month}${date}_${x}.png`,
-                  image,
-                  "base64",
-                  (err) => {
-                    if (err) {
-                      console.log(err);
-                    }
-                  },
-                );
-                cloudinary.v2.uploader.upload(
-                  `upload/recordGraph_${month}${date}_${x}.png`,
-                  {
-                    public_id: `recordGraph_${month}${date}_${x}`,
-                  },
-                  function (result) {
-                    console.log(result);
-                  },
-                );
+              .then((image) => {
+                let uploadStream = cloudinary.v2.uploader.upload_stream({
+                  public_id: `recordGraph_${month}${date}_${x}`,
+                  folder: "posting",
+                });
+                let content = "data:image/png;base64," + image;
+
+                streamifier.createReadStream(content).pipe(uploadStream);
               });
 
             if (!team.includes(teamName)) {
@@ -138,26 +114,14 @@ const enterPage = (link, month, date, teamCode) => {
               await browser
                 .findElements(By.className("PlayerRecord_table_area__1fIBC"))
                 .then((record) => {
-                  record[0].takeScreenshot().then((image, err) => {
-                    fs.writeFile(
-                      `upload/playerRecord_${month}${date}_${x}.png`,
-                      image,
-                      "base64",
-                      (err) => {
-                        if (err) {
-                          console.log(err);
-                        }
-                      },
-                    );
-                    cloudinary.v2.uploader.upload(
-                      `upload/playerRecord_${month}${date}_${x}.png`,
-                      {
-                        public_id: `playerRecord_${month}${date}_${x}`,
-                      },
-                      function (result) {
-                        console.log(result);
-                      },
-                    );
+                  record[0].takeScreenshot().then((image) => {
+                    let uploadStream = cloudinary.v2.uploader.upload_stream({
+                      public_id: `playerRecord_${month}${date}_${x}`,
+                      folder: "posting",
+                    });
+                    let content = "data:image/png;base64," + image;
+
+                    streamifier.createReadStream(content).pipe(uploadStream);
                   });
                 });
 
@@ -165,26 +129,15 @@ const enterPage = (link, month, date, teamCode) => {
               await browser
                 .findElements(By.className("PlayerRecord_table_area__1fIBC"))
                 .then((record) => {
-                  record[2].takeScreenshot().then((image, err) => {
-                    fs.writeFile(
-                      `upload/pitcherRecord_${month}${date}_${x}.png`,
-                      image,
-                      "base64",
-                      (err) => {
-                        if (err) {
-                          console.log(err);
-                        }
-                      },
-                    );
-                    cloudinary.v2.uploader.upload(
-                      `upload/pitcherRecord_${month}${date}_${x}.png`,
-                      {
-                        public_id: `pitcherRecord_${month}${date}_${x}`,
-                      },
-                      function (result) {
-                        console.log(result);
-                      },
-                    );
+                  record[2].takeScreenshot().then((image) => {
+                    let uploadStream = cloudinary.v2.uploader.upload_stream({
+                      public_id: `pitcherRecord_${month}${date}_${x}`,
+                      folder: "posting",
+                    });
+                    let content = "data:image/png;base64," + image;
+
+                    streamifier.createReadStream(content).pipe(uploadStream);
+
                     if (x === link.length - 1) {
                       browser.quit();
                     }
@@ -197,26 +150,14 @@ const enterPage = (link, month, date, teamCode) => {
               await browser
                 .findElements(By.className("PlayerRecord_table_area__1fIBC"))
                 .then((record) => {
-                  record[1].takeScreenshot().then((image, err) => {
-                    fs.writeFile(
-                      `upload/playerRecord_${month}${date}_${x}.png`,
-                      image,
-                      "base64",
-                      (err) => {
-                        if (err) {
-                          console.log(err);
-                        }
-                      },
-                    );
-                    cloudinary.v2.uploader.upload(
-                      `upload/playerRecord_${month}${date}_${x}.png`,
-                      {
-                        public_id: `playerRecord_${month}${date}_${x}`,
-                      },
-                      function (result) {
-                        console.log(result);
-                      },
-                    );
+                  record[1].takeScreenshot().then((image) => {
+                    let uploadStream = cloudinary.v2.uploader.upload_stream({
+                      public_id: `playerRecord_${month}${date}_${x}`,
+                      folder: "posting",
+                    });
+                    let content = "data:image/png;base64," + image;
+
+                    streamifier.createReadStream(content).pipe(uploadStream);
                   });
                 });
 
@@ -224,26 +165,14 @@ const enterPage = (link, month, date, teamCode) => {
               await browser
                 .findElements(By.className("PlayerRecord_table_area__1fIBC"))
                 .then((record) => {
-                  record[3].takeScreenshot().then((image, err) => {
-                    fs.writeFile(
-                      `upload/pitcherRecord_${month}${date}_${x}.png`,
-                      image,
-                      "base64",
-                      (err) => {
-                        if (err) {
-                          console.log(err);
-                        }
-                      },
-                    );
-                    cloudinary.v2.uploader.upload(
-                      `upload/pitcherRecord_${month}${date}_${x}.png`,
-                      {
-                        public_id: `pitcherRecord_${month}${date}_${x}`,
-                      },
-                      function (result) {
-                        console.log(result);
-                      },
-                    );
+                  record[3].takeScreenshot().then((image) => {
+                    let uploadStream = cloudinary.v2.uploader.upload_stream({
+                      public_id: `pitcherRecord_${month}${date}_${x}`,
+                      folder: "posting",
+                    });
+                    let content = "data:image/png;base64," + image;
+
+                    streamifier.createReadStream(content).pipe(uploadStream);
                     if (x === link.length - 1) {
                       browser.quit();
                     }

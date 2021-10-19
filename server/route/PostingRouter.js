@@ -4,7 +4,14 @@ const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
 const { getGameURL } = require("../scrape/scrape");
-const dir = "./upload";
+const config = require("../config/key");
+const cloudinary = require("cloudinary");
+
+cloudinary.config({
+  cloud_name: config.cloudName,
+  api_key: config.cloudApiKey,
+  api_secret: config.cloudApiSecret,
+});
 
 router.post("/getGameResult", (req, res) => {
   const month = req.body.month;
@@ -15,19 +22,25 @@ router.post("/getGameResult", (req, res) => {
   getGameURL(month, date, teamCode);
 
   setTimeout(() => {
-    fs.readdir(dir, (err, files) => {
-      console.log(files);
-      if (files) {
+    cloudinary.v2.search
+      .expression("posting")
+      .execute()
+      .then((response) => {
+        if (!response) {
+          return res.status(400).json({
+            success: false,
+          });
+        }
+        let image = new Array();
+        for (const i of response.resources) {
+          image.push(i.filename);
+        }
+
         return res.status(200).json({
           success: true,
-          image: files.reverse(),
+          image: image.reverse(),
         });
-      } else {
-        return res.status(400).json({
-          success: false,
-        });
-      }
-    });
+      });
   }, 7000);
 });
 

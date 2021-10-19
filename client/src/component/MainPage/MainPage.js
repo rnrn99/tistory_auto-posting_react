@@ -67,7 +67,6 @@ function MainPage() {
       date: Date,
       teamCode: Team,
     };
-
     message.loading("경기 기록을 가져오고 있습니다. 잠시만 기다려주세요.");
 
     axios.post("/api/posting/getGameResult", variable).then((response) => {
@@ -92,7 +91,8 @@ function MainPage() {
       image.push(
         <img
           src={
-            "https://res.cloudinary.com/dxr1xgmcb/image/upload/v1634639376/" + i
+            "https://res.cloudinary.com/dxr1xgmcb/image/upload/v1634639376/posting/" +
+            i
           }
           alt={i}
           key={i}

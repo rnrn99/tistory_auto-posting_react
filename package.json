@@ -28,7 +28,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.7",
     "mongoose-encryption": "^2.1.1",
-    "selenium-webdriver": "^4.0.0-rc-1"
+    "selenium-webdriver": "^4.0.0-rc-1",
+    "streamifier": "^0.1.1"
   },
   "devDependencies": {
     "concurrently": "^6.2.1",
