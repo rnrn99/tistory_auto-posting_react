@@ -3,4 +3,7 @@ module.exports = {
   secret: process.env.SECRET,
   chromedriverPath: process.env.CHROMEDRIVER_PATH,
   chromeBin: process.env.GOOGLE_CHROME_BIN,
+  cloudName: process.env.CLOUD_NAME,
+  cloudApiKey: process.env.CLOUD_API_KEY,
+  cloudApiSecret: process.env.CLOUD_API_SECRET,
 };

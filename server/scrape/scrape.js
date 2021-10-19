@@ -4,6 +4,13 @@ const chrome = require("selenium-webdriver/chrome");
 const { Options } = require("selenium-webdriver/chrome");
 const fs = require("fs");
 const config = require("../config/key");
+const cloudinary = require("cloudinary");
+
+cloudinary.config({
+  cloud_name: config.cloudName,
+  api_key: config.cloudApiKey,
+  api_secret: config.cloudApiSecret,
+});
 
 let service = null;
 let browser = null;
@@ -11,12 +18,6 @@ let browser = null;
 let teamName = "";
 let link = new Array(); // 경기 결과 페이지 URL
 let isDH = false; // 더블헤더 일정 유무
-
-const makeFolder = (dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
-};
 
 const enterPage = (link, month, date, teamCode) => {
   switch (teamCode) {
@@ -82,14 +83,24 @@ const enterPage = (link, month, date, teamCode) => {
               .findElement(By.className("Home_game_head__3EEZZ"))
               .takeScreenshot()
               .then((image, err) => {
+                console.log();
                 fs.writeFile(
-                  `./server/scrape/image/result_${month}${date}_${x}.png`,
+                  `upload/result_${month}${date}_${x}.png`,
                   image,
                   "base64",
                   (err) => {
                     if (err) {
                       console.log(err);
                     }
+                  },
+                );
+                cloudinary.v2.uploader.upload(
+                  `upload/result_${month}${date}_${x}.png`,
+                  {
+                    public_id: `result_${month}${date}_${x}`,
+                  },
+                  function (result) {
+                    console.log(result);
                   },
                 );
               });
@@ -100,13 +111,22 @@ const enterPage = (link, month, date, teamCode) => {
               .takeScreenshot()
               .then((image, err) => {
                 fs.writeFile(
-                  `./server/scrape/image/recordGraph_${month}${date}_${x}.png`,
+                  `upload/recordGraph_${month}${date}_${x}.png`,
                   image,
                   "base64",
                   (err) => {
                     if (err) {
                       console.log(err);
                     }
+                  },
+                );
+                cloudinary.v2.uploader.upload(
+                  `upload/recordGraph_${month}${date}_${x}.png`,
+                  {
+                    public_id: `recordGraph_${month}${date}_${x}`,
+                  },
+                  function (result) {
+                    console.log(result);
                   },
                 );
               });
@@ -120,13 +140,22 @@ const enterPage = (link, month, date, teamCode) => {
                 .then((record) => {
                   record[0].takeScreenshot().then((image, err) => {
                     fs.writeFile(
-                      `./server/scrape/image/playerRecord_${month}${date}_${x}.png`,
+                      `upload/playerRecord_${month}${date}_${x}.png`,
                       image,
                       "base64",
                       (err) => {
                         if (err) {
                           console.log(err);
                         }
+                      },
+                    );
+                    cloudinary.v2.uploader.upload(
+                      `upload/playerRecord_${month}${date}_${x}.png`,
+                      {
+                        public_id: `playerRecord_${month}${date}_${x}`,
+                      },
+                      function (result) {
+                        console.log(result);
                       },
                     );
                   });
@@ -138,13 +167,22 @@ const enterPage = (link, month, date, teamCode) => {
                 .then((record) => {
                   record[2].takeScreenshot().then((image, err) => {
                     fs.writeFile(
-                      `./server/scrape/image/pitcherRecord_${month}${date}_${x}.png`,
+                      `upload/pitcherRecord_${month}${date}_${x}.png`,
                       image,
                       "base64",
                       (err) => {
                         if (err) {
                           console.log(err);
                         }
+                      },
+                    );
+                    cloudinary.v2.uploader.upload(
+                      `upload/pitcherRecord_${month}${date}_${x}.png`,
+                      {
+                        public_id: `pitcherRecord_${month}${date}_${x}`,
+                      },
+                      function (result) {
+                        console.log(result);
                       },
                     );
                     if (x === link.length - 1) {
@@ -161,13 +199,22 @@ const enterPage = (link, month, date, teamCode) => {
                 .then((record) => {
                   record[1].takeScreenshot().then((image, err) => {
                     fs.writeFile(
-                      `./server/scrape/image/playerRecord_${month}${date}_${x}.png`,
+                      `upload/playerRecord_${month}${date}_${x}.png`,
                       image,
                       "base64",
                       (err) => {
                         if (err) {
                           console.log(err);
                         }
+                      },
+                    );
+                    cloudinary.v2.uploader.upload(
+                      `upload/playerRecord_${month}${date}_${x}.png`,
+                      {
+                        public_id: `playerRecord_${month}${date}_${x}`,
+                      },
+                      function (result) {
+                        console.log(result);
                       },
                     );
                   });
@@ -179,13 +226,22 @@ const enterPage = (link, month, date, teamCode) => {
                 .then((record) => {
                   record[3].takeScreenshot().then((image, err) => {
                     fs.writeFile(
-                      `./server/scrape/image/pitcherRecord_${month}${date}_${x}.png`,
+                      `upload/pitcherRecord_${month}${date}_${x}.png`,
                       image,
                       "base64",
                       (err) => {
                         if (err) {
                           console.log(err);
                         }
+                      },
+                    );
+                    cloudinary.v2.uploader.upload(
+                      `upload/pitcherRecord_${month}${date}_${x}.png`,
+                      {
+                        public_id: `pitcherRecord_${month}${date}_${x}`,
+                      },
+                      function (result) {
+                        console.log(result);
                       },
                     );
                     if (x === link.length - 1) {
@@ -207,8 +263,6 @@ const enterPage = (link, month, date, teamCode) => {
 };
 
 exports.getGameURL = async (month, date, teamCode) => {
-  makeFolder("./server/scrape/image");
-
   service = new chrome.ServiceBuilder(config.chromedriverPath).build();
   chrome.setDefaultService(service);
 

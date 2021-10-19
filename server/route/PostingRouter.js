@@ -4,7 +4,7 @@ const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
 const { getGameURL } = require("../scrape/scrape");
-const dir = "./server/scrape/image";
+const dir = "./upload";
 
 router.post("/getGameResult", (req, res) => {
   const month = req.body.month;
@@ -16,6 +16,7 @@ router.post("/getGameResult", (req, res) => {
 
   setTimeout(() => {
     fs.readdir(dir, (err, files) => {
+      console.log(files);
       if (files) {
         return res.status(200).json({
           success: true,
