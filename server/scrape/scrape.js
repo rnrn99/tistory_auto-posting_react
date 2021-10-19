@@ -200,9 +200,9 @@ exports.getGameURL = async (month, date, teamCode) => {
     options.setChromeBinaryPath(config.chromeBin);
   }
 
-  // options.addArguments("--headless");
-  // options.addArguments("--disable-gpu");
-  // options.addArguments("--no-sandbox");
+  options.addArguments("--headless");
+  options.addArguments("--disable-gpu");
+  options.addArguments("--no-sandbox");
   options.addArguments("--start-fullscreen");
 
   browser = new driver.Builder()
