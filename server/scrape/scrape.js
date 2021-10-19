@@ -1,12 +1,9 @@
 const driver = require("selenium-webdriver");
 const { By, until } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
+const { Options } = require("selenium-webdriver/chrome");
 const fs = require("fs");
-
-const screen = {
-  width: 1920,
-  height: 1080,
-};
+const config = require("../config/key");
 
 let service = null;
 let browser = null;
@@ -212,12 +209,23 @@ const enterPage = (link, month, date, teamCode) => {
 exports.getGameURL = async (month, date, teamCode) => {
   makeFolder("./server/scrape/image");
 
-  service = new chrome.ServiceBuilder("server/scrape/chromedriver.exe").build();
+  service = new chrome.ServiceBuilder(config.chromedriverPath).build();
   chrome.setDefaultService(service);
+
+  let options = new Options();
+
+  if (process.env.NODE_ENV === "production") {
+    options.setChromeBinaryPath(config.chromeBin);
+  }
+
+  // options.addArguments("--headless");
+  options.addArguments("--disable-gpu");
+  options.addArguments("--no-sandbox");
+  options.addArguments("--start-fullscreen");
 
   browser = new driver.Builder()
     .forBrowser("chrome")
-    .setChromeOptions(new chrome.Options().headless().windowSize(screen))
+    .setChromeOptions(options)
     .build();
 
   month = parseInt(month) > 9 ? month : "0" + month;

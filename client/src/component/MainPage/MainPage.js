@@ -89,9 +89,10 @@ function MainPage() {
   const renderingImage = () => {
     const image = [];
     for (const i of Image) {
+      console.log(process.env.REACT_APP_IMAGE_URI);
       image.push(
         <img
-          src={"http://localhost:5000/" + i}
+          src={`${process.env.REACT_APP_IMAGE_URI}` + i}
           alt={i}
           key={i}
           width="50%"
