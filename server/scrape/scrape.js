@@ -58,24 +58,10 @@ const enterPage = (link, month, date, teamCode) => {
         setTimeout(async () => {
           browser.get(link[x]);
 
-          // 페이지 로딩 기다림
-          await browser.wait(
-            until.elementLocated(
-              By.xpath(
-                '//*[@id="content"]/div/div[2]/section[1]/div[2]/div[3]/div[1]/div[2]',
-              ),
-            ),
-            2000,
-          );
-
           setTimeout(async () => {
             // 홈, 원정 확인 & 승, 패 여부 확인 -> ex.한화승김민우
             let team = await browser
-              .findElement(
-                By.xpath(
-                  '//*[@id="content"]/div/div[2]/section[1]/div[2]/div[3]/div[1]/div[2]',
-                ),
-              )
+              .findElement(By.className("MatchBox_text__22e-R"))
               .getText();
 
             // 경기 결과 이미지 저장
@@ -107,42 +93,6 @@ const enterPage = (link, month, date, teamCode) => {
               });
 
             if (!team.includes(teamName)) {
-              // 해당 팀 원정 경기
-
-              // 야수 기록 이미지 저장
-              await browser
-                .findElements(By.className("PlayerRecord_table_area__1fIBC"))
-                .then((record) => {
-                  record[0].takeScreenshot().then((image) => {
-                    let uploadStream = cloudinary.v2.uploader.upload_stream({
-                      public_id: `playerRecord_${month}${date}_${x}`,
-                      folder: "posting",
-                    });
-                    let content = "data:image/png;base64," + image;
-
-                    streamifier.createReadStream(content).pipe(uploadStream);
-                  });
-                });
-
-              // 투수 기록 이미지 저장
-              await browser
-                .findElements(By.className("PlayerRecord_table_area__1fIBC"))
-                .then((record) => {
-                  record[2].takeScreenshot().then((image) => {
-                    let uploadStream = cloudinary.v2.uploader.upload_stream({
-                      public_id: `pitcherRecord_${month}${date}_${x}`,
-                      folder: "posting",
-                    });
-                    let content = "data:image/png;base64," + image;
-
-                    streamifier.createReadStream(content).pipe(uploadStream);
-
-                    if (x === link.length - 1) {
-                      browser.quit();
-                    }
-                  });
-                });
-            } else {
               // 해당 팀 홈 경기
 
               // 야수 기록 이미지 저장
@@ -172,9 +122,38 @@ const enterPage = (link, month, date, teamCode) => {
                     let content = "data:image/png;base64," + image;
 
                     streamifier.createReadStream(content).pipe(uploadStream);
-                    if (x === link.length - 1) {
-                      browser.quit();
-                    }
+                  });
+                });
+            } else {
+              // 해당 팀 원정 경기
+
+              // 야수 기록 이미지 저장
+              await browser
+                .findElements(By.className("PlayerRecord_table_area__1fIBC"))
+                .then((record) => {
+                  record[0].takeScreenshot().then((image) => {
+                    let uploadStream = cloudinary.v2.uploader.upload_stream({
+                      public_id: `playerRecord_${month}${date}_${x}`,
+                      folder: "posting",
+                    });
+                    let content = "data:image/png;base64," + image;
+
+                    streamifier.createReadStream(content).pipe(uploadStream);
+                  });
+                });
+
+              // 투수 기록 이미지 저장
+              await browser
+                .findElements(By.className("PlayerRecord_table_area__1fIBC"))
+                .then((record) => {
+                  record[2].takeScreenshot().then((image) => {
+                    let uploadStream = cloudinary.v2.uploader.upload_stream({
+                      public_id: `pitcherRecord_${month}${date}_${x}`,
+                      folder: "posting",
+                    });
+                    let content = "data:image/png;base64," + image;
+
+                    streamifier.createReadStream(content).pipe(uploadStream);
                   });
                 });
             }
@@ -183,10 +162,12 @@ const enterPage = (link, month, date, teamCode) => {
       })(i);
     }
   } catch (error) {
-    if (error) {
-      console.log("capture error");
+    console.log("capture error");
+    browser.quit();
+  } finally {
+    setTimeout(() => {
       browser.quit();
-    }
+    }, 5000);
   }
 };
 
@@ -202,11 +183,7 @@ exports.getGameURL = async (month, date, teamCode) => {
 
   options.addArguments("--headless");
   options.addArguments("--disable-gpu");
-  options.addArguments("--test-type");
-  options.addArguments("--no-first-run");
   options.addArguments("--no-sandbox");
-  options.addArguments("--no-default-browser-check");
-  options.addArguments("--ignore-certificate-errors");
   options.addArguments("--start-fullscreen");
   options.addArguments(
     "User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
