@@ -1,8 +1,6 @@
 const driver = require("selenium-webdriver");
 const { By, until } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
-const { Options } = require("selenium-webdriver/chrome");
-const fs = require("fs");
 const config = require("../config/key");
 const cloudinary = require("cloudinary");
 const streamifier = require("streamifier");
@@ -196,15 +194,15 @@ exports.getGameURL = async (month, date, teamCode) => {
   service = new chrome.ServiceBuilder(config.chromedriverPath).build();
   chrome.setDefaultService(service);
 
-  let options = new Options();
+  let options = new chrome.Options();
 
   if (process.env.NODE_ENV === "production") {
     options.setChromeBinaryPath(config.chromeBin);
   }
 
   // options.addArguments("--headless");
-  options.addArguments("--disable-gpu");
-  options.addArguments("--no-sandbox");
+  // options.addArguments("--disable-gpu");
+  // options.addArguments("--no-sandbox");
   options.addArguments("--start-fullscreen");
 
   browser = new driver.Builder()
