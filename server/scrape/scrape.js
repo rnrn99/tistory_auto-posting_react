@@ -204,6 +204,9 @@ exports.getGameURL = async (month, date, teamCode) => {
   options.addArguments("--disable-gpu");
   options.addArguments("--no-sandbox");
   options.addArguments("--start-fullscreen");
+  options.addArguments([
+    'user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36"',
+  ]);
 
   browser = new driver.Builder()
     .forBrowser("chrome")
