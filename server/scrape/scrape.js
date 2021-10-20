@@ -196,6 +196,7 @@ exports.getGameURL = async (month, date, teamCode) => {
   options.addArguments("--headless");
   options.addArguments("--disable-gpu");
   options.addArguments("--no-sandbox");
+  options.addArguments("--remote-debugging-port=9222");
   options.addArguments("window-size=1920,1080");
   options.addArguments("--lang=ko");
   options.addArguments(
