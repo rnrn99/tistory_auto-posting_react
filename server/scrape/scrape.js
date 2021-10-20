@@ -56,7 +56,7 @@ const enterPage = (link, month, date, teamCode) => {
     for (let i = 0; i < link.length; i++) {
       (function (x) {
         setTimeout(async () => {
-          browser.get(link[x]);
+          await browser.get(link[x]);
 
           setTimeout(async () => {
             // 홈, 원정 확인 & 승, 패 여부 확인 -> ex.한화승김민우
@@ -202,7 +202,7 @@ exports.getGameURL = async (month, date, teamCode) => {
   date = parseInt(date) > 9 ? date : "0" + date;
 
   let url = `https://sports.news.naver.com/kbaseball/schedule/index?date=20210922&month=${month}&year=2021&teamCode=${teamCode}#`;
-  browser.get(url);
+  await browser.get(url);
 
   let userAgentcheck = await browser.executeScript(
     "return navigator.userAgent;",
@@ -231,7 +231,7 @@ exports.getGameURL = async (month, date, teamCode) => {
 
   // 원하는 게임의 결과 페이지 주소 가져오기
   if (!isDH) {
-    game[parseInt((date - 1) / 2)]
+    await game[parseInt((date - 1) / 2)]
       .findElement(By.className("td_btn"))
       .findElement(By.css("a"))
       .getAttribute("href")
