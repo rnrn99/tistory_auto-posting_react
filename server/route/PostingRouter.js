@@ -42,7 +42,7 @@ router.post("/getGameResult", (req, res) => {
           image: image.reverse(),
         });
       });
-  }, 7000);
+  }, 10001);
 });
 
 /*
