@@ -45,6 +45,9 @@ router.post("/getGameResult", (req, res) => {
   }, 7000);
 });
 
+/*
+ * cloudinary에서 가져온 url로 사진 접근하기
+ */
 router.post("/getReplacer", (req, res) => {
   let file = req.body.image;
   let formData = new FormData();
