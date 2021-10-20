@@ -71,6 +71,7 @@ const enterPage = (link, month, date, teamCode) => {
               .getText();
 
             // 경기 결과 이미지 저장
+            await browser.sleep(1000);
             await browser
               .findElement(By.className("Home_game_head__3EEZZ"))
               .takeScreenshot()
@@ -85,6 +86,7 @@ const enterPage = (link, month, date, teamCode) => {
               });
 
             // 경기 그래프 이미지 저장
+            await browser.sleep(1000);
             await browser
               .findElement(By.className("TeamVS_comp_team_vs__fpu3N"))
               .takeScreenshot()
@@ -102,6 +104,7 @@ const enterPage = (link, month, date, teamCode) => {
               // 해당 팀 원정 경기
 
               // 야수 기록 이미지 저장
+              await browser.sleep(1000);
               await browser
                 .findElements(By.className("PlayerRecord_table_area__1fIBC"))
                 .then((record) => {
@@ -117,6 +120,7 @@ const enterPage = (link, month, date, teamCode) => {
                 });
 
               // 투수 기록 이미지 저장
+              await browser.sleep(1000);
               await browser
                 .findElements(By.className("PlayerRecord_table_area__1fIBC"))
                 .then((record) => {
@@ -134,6 +138,7 @@ const enterPage = (link, month, date, teamCode) => {
               // 해당 팀 홈 경기
 
               // 야수 기록 이미지 저장
+              await browser.sleep(1000);
               await browser
                 .findElements(By.className("PlayerRecord_table_area__1fIBC"))
                 .then((record) => {
@@ -149,6 +154,7 @@ const enterPage = (link, month, date, teamCode) => {
                 });
 
               // 투수 기록 이미지 저장
+              await browser.sleep(1000);
               await browser
                 .findElements(By.className("PlayerRecord_table_area__1fIBC"))
                 .then((record) => {
