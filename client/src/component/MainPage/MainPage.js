@@ -23,8 +23,8 @@ function MainPage() {
   const [PostingTitle, setPostingTitle] = useState("");
   const [Comment, setComment] = useState("");
   const [Image, setImage] = useState([]);
+  const [ImageButtonVisible, setImageButtonVisible] = useState(false);
   const [ImageButtonClick, setImageButtonClick] = useState(false);
-  const [Replacer, setReplacer] = useState([]);
 
   useEffect(() => {
     let variable = {
@@ -72,7 +72,7 @@ function MainPage() {
     axios.post("/api/posting/getGameResult", variable).then((response) => {
       if (response.data.success) {
         message.success("경기 기록을 가져오는 데에 성공했습니다.");
-        setImage(response.data.image);
+        setImageButtonVisible(!ImageButtonVisible);
       } else {
         message.error(
           "경기 기록을 가져오는 데에 실패했습니다. 잠시후 다시 시도해 주세요.",
@@ -83,6 +83,16 @@ function MainPage() {
 
   const handleImage = () => {
     setImageButtonClick(!ImageButtonClick);
+
+    axios.get("/api/posting/getImage").then((response) => {
+      if (response.data.success) {
+        setImage(response.data.image);
+      } else {
+        message.error(
+          "사진을 가져오는 데에 실패했습니다. 잠시후 다시 시도해 주세요",
+        );
+      }
+    });
   };
 
   const renderingImage = () => {
@@ -102,34 +112,6 @@ function MainPage() {
       );
     }
     return image;
-  };
-
-  const handleReplacer = () => {
-    let item = [];
-    for (const i of Image) {
-      let variable = {
-        accessToken: AccessToken,
-        redirectUri: RedirectUri,
-        postingTitle: PostingTitle,
-        comment: Comment,
-        category: CategoryID,
-        image: i,
-      };
-
-      axios.post("/api/posting/getReplacer", variable).then((response) => {
-        if (response.data.success) {
-          item.push({
-            filename: response.data.filename,
-            replacer: response.data.replacer,
-          });
-          setReplacer(item);
-        } else {
-          message.error(
-            "사진 업로드에 실패했습니다. 잠시 후 다시 시도해 주세요",
-          );
-        }
-      });
-    }
   };
 
   const handleSubmit = (e) => {
@@ -209,7 +191,7 @@ function MainPage() {
           ></TextArea>
         </Form.Item>
 
-        {Image.length > 0 && (
+        {ImageButtonVisible && (
           <Form.Item wrapperCol={{ span: 24, offset: 5 }}>
             <Button
               type="primary"
@@ -218,14 +200,6 @@ function MainPage() {
               onClick={handleImage}
             >
               사진 미리보기
-            </Button>
-            <Button
-              type="primary"
-              ghost
-              style={{ float: "right", minWidth: "30%" }}
-              onClick={handleReplacer}
-            >
-              사진 저장하기
             </Button>
           </Form.Item>
         )}

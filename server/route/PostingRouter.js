@@ -21,56 +21,59 @@ router.post("/getGameResult", (req, res) => {
   console.log(req.body);
 
   getGameURL(month, date, teamCode);
-
   setTimeout(() => {
-    cloudinary.v2.search
-      .expression("posting")
-      .execute()
-      .then((response) => {
-        if (!response) {
-          return res.status(400).json({
-            success: false,
-          });
-        }
-        let image = new Array();
-        for (const i of response.resources) {
-          image.push(i.filename);
-        }
-
-        return res.status(200).json({
-          success: true,
-          image: image.reverse(),
-        });
-      });
+    return res.status(200).json({ success: true });
   }, 11000);
+});
+
+router.get("/getImage", (req, res) => {
+  cloudinary.v2.search
+    .expression("posting")
+    .execute()
+    .then((response) => {
+      if (!response) {
+        return res.status(400).json({
+          success: false,
+        });
+      }
+      let image = new Array();
+      for (const i of response.resources) {
+        image.push(i.filename);
+      }
+
+      return res.status(200).json({
+        success: true,
+        image: image.reverse(),
+      });
+    });
 });
 
 /*
  * cloudinary에서 가져온 url로 사진 접근하기
  */
-router.post("/getReplacer", (req, res) => {
-  let file = req.body.image;
-  let formData = new FormData();
-  formData.append("uploadedfile", fs.createReadStream(dir + "/" + file));
-  axios
-    .post("https://www.tistory.com/apis/post/attach?", formData, {
-      headers: {
-        ...formData.getHeaders(),
-      },
-      params: {
-        access_token: req.body.accessToken,
-        blogName: req.body.redirectUri,
-        output: "json",
-      },
-    })
-    .then((response) => {
-      return res.status(200).json({
-        success: true,
-        filename: file,
-        replacer: response.data.tistory.replacer,
-      });
-    });
-});
+// router.post("/getReplacer", (req, res) => {
+//   let file = req.body.image;
+//   let formData = new FormData();
+//   formData.append("uploadedfile", fs.createReadStream(dir + "/" + file));
+//   axios
+//     .post("https://www.tistory.com/apis/post/attach?", formData, {
+//       headers: {
+//         ...formData.getHeaders(),
+//       },
+//       params: {
+//         access_token: req.body.accessToken,
+//         blogName: req.body.redirectUri,
+//         output: "json",
+//       },
+//     })
+//     .then((response) => {
+//       return res.status(200).json({
+//         success: true,
+//         filename: file,
+//         replacer: response.data.tistory.replacer,
+//       });
+//     });
+// });
 
 router.post("/posting", (req, res) => {
   // 글 포스팅
