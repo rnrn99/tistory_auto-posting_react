@@ -168,7 +168,7 @@ const enterPage = (link, month, date, teamCode) => {
                   });
                 });
             }
-          }, 10000);
+          }, 1000);
         }, 2000 * x);
       })(i);
     }
@@ -178,7 +178,7 @@ const enterPage = (link, month, date, teamCode) => {
   } finally {
     setTimeout(() => {
       browser.quit();
-    }, 5000);
+    }, 10000);
   }
 };
 
