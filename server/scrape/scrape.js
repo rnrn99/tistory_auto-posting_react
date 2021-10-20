@@ -1,6 +1,7 @@
 const driver = require("selenium-webdriver");
 const { By, until } = require("selenium-webdriver");
-const chrome = require("selenium-webdriver/chrome");
+const firefox = require("selenium-webdriver/firefox");
+const path = require("geckodriver").path;
 const config = require("../config/key");
 const cloudinary = require("cloudinary");
 const streamifier = require("streamifier");
@@ -172,26 +173,27 @@ const enterPage = (link, month, date, teamCode) => {
 };
 
 exports.getGameURL = async (month, date, teamCode) => {
-  service = new chrome.ServiceBuilder(config.chromedriverPath).build();
-  chrome.setDefaultService(service);
+  // service = new firefox.ServiceBuilder(path).build();
+  // firefox.setFirefoxService(service);
+  // firefox.ServiceBuilder().setPath(config.driverPath);
 
-  let options = new chrome.Options();
+  let options = new firefox.Options();
 
   if (process.env.NODE_ENV === "production") {
-    options.setChromeBinaryPath(config.chromeBin);
+    options.setBinary(config.Bin);
   }
-
   options.addArguments("--headless");
   options.addArguments("--disable-gpu");
   options.addArguments("--no-sandbox");
-  options.addArguments("--start-fullscreen");
+  options.addArguments("--width=1920");
+  options.addArguments("--height=1080");
   options.addArguments(
     "User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
   );
 
   browser = new driver.Builder()
-    .forBrowser("chrome")
-    .setChromeOptions(options)
+    .forBrowser("firefox")
+    .setFirefoxOptions(options)
     .build();
 
   month = parseInt(month) > 9 ? month : "0" + month;
