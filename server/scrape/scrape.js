@@ -57,8 +57,10 @@ const enterPage = (link, month, date, teamCode) => {
       (function (x) {
         setTimeout(async () => {
           await browser.get(link[x]);
+          console.log(link[x]);
 
           setTimeout(async () => {
+            await browser.sleep(1000);
             // 홈, 원정 확인 & 승, 패 여부 확인 -> ex.한화승김민우
             let team = await browser
               .findElement(
