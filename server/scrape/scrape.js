@@ -188,8 +188,9 @@ exports.getGameURL = async (month, date, teamCode) => {
   options.addArguments("--disable-gpu");
   options.addArguments("--no-sandbox");
   options.addArguments("window-size=1920,1080");
+  options.addArguments("lang=ko_KR");
   options.addArguments(
-    "User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
+    "User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36",
   );
 
   browser = new driver.Builder()
@@ -202,6 +203,9 @@ exports.getGameURL = async (month, date, teamCode) => {
 
   let url = `https://sports.news.naver.com/kbaseball/schedule/index?date=20210922&month=${month}&year=2021&teamCode=${teamCode}#`;
   browser.get(url);
+
+  let userAgent = await browser.executeScript("return navigator.userAgent;");
+  console.log("####UserAgent####   ", userAgent);
 
   // 게임 테이블 가져오기
   let game = await browser.findElement(By.className("tb_wrap"));
