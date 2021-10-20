@@ -69,6 +69,8 @@ const enterPage = (link, month, date, teamCode) => {
               )
               .getText();
 
+            console.log(team);
+
             // 경기 결과 이미지 저장
             await browser.sleep(1000);
             await browser
@@ -195,8 +197,7 @@ exports.getGameURL = async (month, date, teamCode) => {
   options.addArguments("--disable-gpu");
   options.addArguments("--no-sandbox");
   options.addArguments("window-size=1920,1080");
-  options.addArguments("--lang=ko-KR");
-  options.addArguments("--accept-encoding=utf-8");
+  options.addArguments("--lang=ko");
   options.addArguments(
     "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36",
   );
