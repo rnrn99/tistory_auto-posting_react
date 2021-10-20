@@ -199,7 +199,7 @@ exports.getGameURL = async (month, date, teamCode) => {
   options.addArguments("--remote-debugging-port=9222");
   options.addArguments("window-size=1920,1080");
   options.addArguments("--lang=ko");
-  options.addArguments("Content-Type=application/json; charset=utf-8");
+  options.addArguments("--font-render-hinting=none");
   options.addArguments(
     "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36",
   );
