@@ -100,10 +100,7 @@ function MainPage() {
     for (const i of Image) {
       image.push(
         <img
-          src={
-            "https://res.cloudinary.com/dxr1xgmcb/image/upload/v1634639376/posting/" +
-            i
-          }
+          src={"https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/" + i}
           alt={i}
           key={i}
           width="50%"
