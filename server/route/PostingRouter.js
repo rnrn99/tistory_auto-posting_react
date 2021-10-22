@@ -128,6 +128,7 @@ router.post("/posting", (req, res) => {
       content: content,
       category: req.body.category,
       tag: req.body.tag,
+      visibility: "3",
     })
     .then((response) => {
       if (response.data.tistory.status === "200") {
