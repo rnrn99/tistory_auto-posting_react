@@ -16,7 +16,6 @@ let service = null;
 let browser = null;
 
 let teamName = "";
-let link = new Array(); // 경기 결과 페이지 URL
 let isDH = false; // 더블헤더 일정 유무
 
 const enterPage = (link, month, date, teamCode) => {
@@ -186,6 +185,7 @@ const enterPage = (link, month, date, teamCode) => {
 };
 
 exports.getGameURL = async (month, date, teamCode) => {
+  let link = []; // 경기 결과 페이지 URL
   service = new chrome.ServiceBuilder(config.chromedriverPath).build();
   chrome.setDefaultService(service);
 
