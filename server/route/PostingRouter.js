@@ -33,7 +33,7 @@ router.post("/getGameResult", (req, res) => {
         }
         return res.status(200).json({ success: true });
       });
-  }, 10000);
+  }, 20000);
 });
 
 router.get("/getImage", (req, res) => {

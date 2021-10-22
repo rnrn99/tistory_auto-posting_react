@@ -74,7 +74,7 @@ function MainPage() {
       date: Date,
       teamCode: Team,
     };
-    message.loading("경기 기록을 가져오고 있습니다. 잠시만 기다려주세요.", 10);
+    message.loading("경기 기록을 가져오고 있습니다. 잠시만 기다려주세요.", 20);
 
     axios.post("/api/posting/getGameResult", variable).then((response) => {
       if (response.data.success) {
