@@ -13,6 +13,9 @@ cloudinary.config({
 });
 
 router.post("/getGameResult", (req, res) => {
+  // cloudinary에 저장되어 있는 사진 삭제
+  cloudinary.api.delete_resources_by_prefix("posting/", function (result) {});
+
   const month = req.body.month;
   const date = req.body.date;
   const teamCode = req.body.teamCode;
@@ -132,11 +135,6 @@ router.post("/posting", (req, res) => {
     })
     .then((response) => {
       if (response.data.tistory.status === "200") {
-        // 블로그 업로드 후 cloudinary에 저장한 사진 삭제
-        cloudinary.api.delete_resources_by_prefix(
-          "posting/",
-          function (result) {},
-        );
         return res.status(200).json({
           success: true,
           url: response.data.tistory.url,
