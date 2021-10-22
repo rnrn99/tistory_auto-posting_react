@@ -243,7 +243,7 @@ exports.getGameURL = async (month, date, teamCode) => {
 
   // 원하는 게임의 결과 페이지 주소 가져오기
   if (!isDH) {
-    await game[parseInt((date - 1) / 2)]
+    game[parseInt((date - 1) / 2)]
       .findElement(By.className("td_btn"))
       .findElement(By.css("a"))
       .getAttribute("href")
@@ -252,7 +252,7 @@ exports.getGameURL = async (month, date, teamCode) => {
         enterPage(link, month, date, teamCode);
       });
   } else {
-    await game[parseInt((date - 1) / 2)]
+    game[parseInt((date - 1) / 2)]
       .findElements(By.className("td_btn"))
       .then(async function (links) {
         for (let i = 0; i < 2; i++) {
