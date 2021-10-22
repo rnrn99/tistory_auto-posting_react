@@ -8,6 +8,7 @@ import {
   Typography,
   AutoComplete,
   DatePicker,
+  Select,
 } from "antd";
 
 const { Title } = Typography;
@@ -22,9 +23,11 @@ function MainPage() {
   const [Team, setTeam] = useState("");
   const [PostingTitle, setPostingTitle] = useState("");
   const [Comment, setComment] = useState("");
+  const [Tags, setTags] = useState("");
   const [Image, setImage] = useState([]);
   const [ImageButtonVisible, setImageButtonVisible] = useState(false);
   const [ImageButtonClick, setImageButtonClick] = useState(false);
+  const [PostingURL, setPostingURL] = useState("");
 
   useEffect(() => {
     let variable = {
@@ -60,6 +63,10 @@ function MainPage() {
     setComment(e.currentTarget.value);
   };
 
+  const onTagsHandler = (value) => {
+    setTags(`${value}`);
+  };
+
   const scrapeData = () => {
     // 서버 단으로 요청 보내서 scrape.js 동작
     let variable = {
@@ -67,11 +74,7 @@ function MainPage() {
       date: Date,
       teamCode: Team,
     };
-    const loading = message.loading(
-      "경기 기록을 가져오고 있습니다. 잠시만 기다려주세요.",
-      0,
-    );
-    setTimeout(loading, 11000);
+    message.loading("경기 기록을 가져오고 있습니다. 잠시만 기다려주세요.", 10);
 
     axios.post("/api/posting/getGameResult", variable).then((response) => {
       if (response.data.success) {
@@ -126,11 +129,13 @@ function MainPage() {
       comment: Comment,
       category: CategoryID,
       image: Image,
+      tag: Tags,
     };
 
     axios.post("/api/posting/posting", variable).then((response) => {
       if (response.data.success) {
-        console.log(response.data);
+        message.success("블로그에 포스팅했습니다.");
+        setPostingURL(response.data.url);
       } else {
         message.error(
           "블로그에 포스팅하는데 실패했습니다. 잠시 후 다시 시도해 주세요.",
@@ -187,6 +192,14 @@ function MainPage() {
           ></TextArea>
         </Form.Item>
 
+        <Form.Item label="Tags">
+          <Select
+            mode="tags"
+            placeholder="Enter your tags"
+            onChange={onTagsHandler}
+          ></Select>
+        </Form.Item>
+
         {ImageButtonVisible && (
           <Form.Item wrapperCol={{ span: 24, offset: 5 }}>
             <Button
@@ -204,6 +217,7 @@ function MainPage() {
             {renderingImage()}
           </Form.Item>
         )}
+
         <Form.Item wrapperCol={{ span: 24, offset: 12 }}>
           <Button
             type="primary"
@@ -213,6 +227,13 @@ function MainPage() {
           >
             포스팅하기
           </Button>
+          {PostingURL !== "" && (
+            <Button type="link" style={{ float: "right" }}>
+              <a href={PostingURL} target="_blank" rel="noopener noreferrer">
+                블로그 확인하러 가기
+              </a>
+            </Button>
+          )}
         </Form.Item>
       </Form>
     </div>
