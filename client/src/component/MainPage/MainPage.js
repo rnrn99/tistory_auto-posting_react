@@ -67,7 +67,11 @@ function MainPage() {
       date: Date,
       teamCode: Team,
     };
-    message.loading("경기 기록을 가져오고 있습니다. 잠시만 기다려주세요.");
+    const loading = message.loading(
+      "경기 기록을 가져오고 있습니다. 잠시만 기다려주세요.",
+      0,
+    );
+    setTimeout(loading, 11000);
 
     axios.post("/api/posting/getGameResult", variable).then((response) => {
       if (response.data.success) {
@@ -133,11 +137,6 @@ function MainPage() {
         );
       }
     });
-  };
-
-  //확인용
-  const handleTest = () => {
-    console.log(Image);
   };
 
   const options = [
@@ -215,19 +214,6 @@ function MainPage() {
             포스팅하기
           </Button>
         </Form.Item>
-
-        {
-          /* Replacer 확인용 test 버튼 ####나중에 지우기 */
-          <Form.Item wrapperCol={{ span: 24, offset: 12 }}>
-            <Button
-              type="primary"
-              style={{ minWidth: "30%" }}
-              onClick={handleTest}
-            >
-              test
-            </Button>
-          </Form.Item>
-        }
       </Form>
     </div>
   );
