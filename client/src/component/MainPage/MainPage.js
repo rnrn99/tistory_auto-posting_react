@@ -15,6 +15,7 @@ const { Title } = Typography;
 const { TextArea } = Input;
 
 function MainPage() {
+  const [Year, setYear] = useState("");
   const [Month, setMonth] = useState("");
   const [Date, setDate] = useState("");
   const [RedirectUri, setRedirectUri] = useState("");
@@ -51,6 +52,7 @@ function MainPage() {
   }, []);
 
   const onDateHandler = (value) => {
+    setYear(value.format("Y"));
     setMonth(value.format("M"));
     setDate(value.format("D"));
   };
@@ -70,6 +72,7 @@ function MainPage() {
   const scrapeData = () => {
     // 서버 단으로 요청 보내서 scrape.js 동작
     let variable = {
+      year: Year,
       month: Month,
       date: Date,
       teamCode: Team,

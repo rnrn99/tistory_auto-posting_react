@@ -16,12 +16,13 @@ router.post("/getGameResult", (req, res) => {
   // cloudinary에 저장되어 있는 사진 삭제
   cloudinary.api.delete_resources_by_prefix("posting/", function (result) {});
 
+  const year = req.body.year;
   const month = req.body.month;
   const date = req.body.date;
   const teamCode = req.body.teamCode;
   console.log(req.body);
 
-  getGameURL(month, date, teamCode);
+  getGameURL(year, month, date, teamCode);
 
   setTimeout(() => {
     //cloudinary 가서 사진 있으면 성공 없으면 실패

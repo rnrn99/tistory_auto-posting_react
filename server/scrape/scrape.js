@@ -184,7 +184,7 @@ const enterPage = (link, month, date, teamCode) => {
   }
 };
 
-exports.getGameURL = async (month, date, teamCode) => {
+exports.getGameURL = async (year, month, date, teamCode) => {
   let link = []; // 경기 결과 페이지 URL
   service = new chrome.ServiceBuilder(config.chromedriverPath).build();
   chrome.setDefaultService(service);
@@ -213,7 +213,7 @@ exports.getGameURL = async (month, date, teamCode) => {
   month = parseInt(month) > 9 ? month : "0" + month;
   date = parseInt(date) > 9 ? date : "0" + date;
 
-  let url = `https://sports.news.naver.com/kbaseball/schedule/index?date=20210922&month=${month}&year=2021&teamCode=${teamCode}#`;
+  let url = `https://sports.news.naver.com/kbaseball/schedule/index?date=${year}${month}${date}&month=${month}&year=${year}&teamCode=${teamCode}#`;
   await browser.get(url);
 
   let userAgentcheck = await browser.executeScript(
