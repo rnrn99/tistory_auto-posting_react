@@ -14,7 +14,7 @@ cloudinary.config({
 
 router.post("/getGameResult", (req, res) => {
   // cloudinary에 저장되어 있는 사진 삭제
-  cloudinary.api.delete_resources_by_prefix("posting/", function (result) {});
+  // cloudinary.api.delete_resources_by_prefix("posting/", function (result) {});
 
   const year = req.body.year;
   const month = req.body.month;
@@ -40,9 +40,12 @@ router.post("/getGameResult", (req, res) => {
   }, 20000);
 });
 
-router.get("/getImage", (req, res) => {
+router.post("/getImage", (req, res) => {
+  const month = req.body.month;
+  const date = req.body.date;
+
   cloudinary.v2.search
-    .expression("posting")
+    .expression(`posting AND tags=${month}${date}`)
     .execute()
     .then((response) => {
       if (response.total_count === 0) {
@@ -79,41 +82,41 @@ router.post("/posting", (req, res) => {
       content += '<p data-ke-size="size14">&nbsp;</p>';
       content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${
         image[i * 4]
-      }"></img>`;
+      }" width="95%" ></img>`;
       content += keyEnter;
 
       content += `<h3 data-ke-size="size23">${i + 1}차전 기록 그래프</h3>`;
       content += '<p data-ke-size="size14">&nbsp;</p>';
       content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${
         image[i * 4 + 1]
-      }"></img>`;
+      }" width="95%" ></img>`;
       content += keyEnter;
 
       content += `<h3 data-ke-size="size23">${i + 1}차전 선수단 기록</h3>`;
       content += '<p data-ke-size="size14">&nbsp;</p>';
       content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${
         image[i * 4 + 2]
-      }"></img>`;
+      }" width="95%" ></img>`;
       content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${
         image[i * 4 + 3]
-      }"></img>`;
+      }" width="95%" ></img>`;
       content += keyEnter;
     }
   } else {
     content += `<h3 data-ke-size="size23">경기 결과</h3>`;
     content += '<p data-ke-size="size14">&nbsp;</p>';
-    content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${image[0]}"></img>`;
+    content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${image[0]}" width="95%" ></img>`;
     content += keyEnter;
 
     content += `<h3 data-ke-size="size23">기록 그래프</h3>`;
     content += '<p data-ke-size="size14">&nbsp;</p>';
-    content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${image[1]}"></img>`;
+    content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${image[1]}" width="95%" ></img>`;
     content += keyEnter;
 
     content += `<h3 data-ke-size="size23">선수단 기록</h3>`;
     content += '<p data-ke-size="size14">&nbsp;</p>';
-    content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${image[2]}"></img>`;
-    content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${image[3]}"></img>`;
+    content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${image[2]}" width="95%" ></img>`;
+    content += `<img src="https://res.cloudinary.com/dxr1xgmcb/image/upload/posting/${image[3]}" width="95%" ></img>`;
     content += keyEnter;
   }
 

@@ -80,6 +80,7 @@ const enterPage = (link, month, date, teamCode) => {
                 let uploadStream = cloudinary.v2.uploader.upload_stream({
                   public_id: `result_${month}${date}_${x}`,
                   folder: "posting",
+                  tags: `${month}${date}`,
                 });
                 let content = "data:image/png;base64," + image;
 
@@ -95,6 +96,7 @@ const enterPage = (link, month, date, teamCode) => {
                 let uploadStream = cloudinary.v2.uploader.upload_stream({
                   public_id: `recordGraph_${month}${date}_${x}`,
                   folder: "posting",
+                  tags: `${month}${date}`,
                 });
                 let content = "data:image/png;base64," + image;
 
@@ -113,6 +115,7 @@ const enterPage = (link, month, date, teamCode) => {
                     let uploadStream = cloudinary.v2.uploader.upload_stream({
                       public_id: `playerRecord_${month}${date}_${x}`,
                       folder: "posting",
+                      tags: `${month}${date}`,
                     });
                     let content = "data:image/png;base64," + image;
 
@@ -129,6 +132,7 @@ const enterPage = (link, month, date, teamCode) => {
                     let uploadStream = cloudinary.v2.uploader.upload_stream({
                       public_id: `pitcherRecord_${month}${date}_${x}`,
                       folder: "posting",
+                      tags: `${month}${date}`,
                     });
                     let content = "data:image/png;base64," + image;
 
@@ -147,6 +151,7 @@ const enterPage = (link, month, date, teamCode) => {
                     let uploadStream = cloudinary.v2.uploader.upload_stream({
                       public_id: `playerRecord_${month}${date}_${x}`,
                       folder: "posting",
+                      tags: `${month}${date}`,
                     });
                     let content = "data:image/png;base64," + image;
 
@@ -163,6 +168,7 @@ const enterPage = (link, month, date, teamCode) => {
                     let uploadStream = cloudinary.v2.uploader.upload_stream({
                       public_id: `pitcherRecord_${month}${date}_${x}`,
                       folder: "posting",
+                      tags: `${month}${date}`,
                     });
                     let content = "data:image/png;base64," + image;
 

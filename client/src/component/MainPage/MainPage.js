@@ -94,7 +94,12 @@ function MainPage() {
   const handleImage = () => {
     setImageButtonClick(!ImageButtonClick);
 
-    axios.get("/api/posting/getImage").then((response) => {
+    let variable = {
+      month: parseInt(Month) > 9 ? Month : "0" + Month,
+      date: parseInt(Date) > 9 ? Date : "0" + Date,
+    };
+
+    axios.post("/api/posting/getImage", variable).then((response) => {
       if (response.data.success) {
         setImage(response.data.image);
       } else {
